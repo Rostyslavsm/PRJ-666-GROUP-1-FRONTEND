@@ -4,3 +4,4 @@
  */
 
 export { useCourseSubmit } from './hooks/useCourseSubmit';
+export { useClassDelete } from './hooks/useClassDelete';

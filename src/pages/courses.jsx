@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Layout from '../components/Layout';
 import ProtectedRoute from '../components/ProtectedRoute';
 import CourseForm from '../components/CourseForm';
-import { useCourseSubmit } from '@/features/courses';
+import { useCourseSubmit, useClassDelete } from '@/features/courses';
 import { Auth } from '../features/auth/lib/amplifyClient';
 
 export default function CoursesPage() {
@@ -20,6 +20,8 @@ export default function CoursesPage() {
     success: submitSuccess,
     resetState,
   } = useCourseSubmit();
+
+  const { deleteClass, isDeleting, error: deleteError, success: deleteSuccess } = useClassDelete();
 
   // Fetch courses and classes from the backend
   useEffect(() => {
@@ -93,6 +95,44 @@ export default function CoursesPage() {
     }
   }, [submitSuccess]);
 
+  // Refresh class data when a class is deleted successfully
+  useEffect(() => {
+    if (deleteSuccess) {
+      // Fetch classes again or just update local state
+      const fetchCoursesAndClasses = async () => {
+        try {
+          const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+          const user = await Auth.getCurrentUser();
+          if (!user || !user.authorizationHeaders) {
+            throw new Error('You must be logged in to view courses.');
+          }
+
+          const headers = user.authorizationHeaders();
+          const classRes = await fetch(`${API_BASE_URL}/v1/classes`, {
+            headers,
+          });
+          if (!classRes.ok) {
+            throw new Error(`HTTP error! status: ${classRes.status}`);
+          }
+
+          const classData = await classRes.json();
+          const courses = myCourses.map((course) => ({
+            _id: course._id,
+            title: course.title,
+            code: course.code,
+            instructor: { name: course.professor },
+          }));
+          const classSessions = transformClasses(classData.classes, courses);
+          setClassesData(classSessions);
+        } catch (err) {
+          console.error('Failed to refresh classes after delete:', err.message);
+        }
+      };
+
+      fetchCoursesAndClasses();
+    }
+  }, [deleteSuccess, myCourses]);
+
   function transformClasses(classes, courses) {
     const courseMap = {};
     courses.forEach((c) => {
@@ -118,6 +158,7 @@ export default function CoursesPage() {
 
       const courseInfo = courseMap[cls.courseId] || {};
       dayMap[dateStr].push({
+        id: cls._id, // Save the class ID for delete operations
         from: start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' }),
         until: new Date(cls.endTime).toLocaleTimeString([], {
           hour: '2-digit',
@@ -161,6 +202,21 @@ export default function CoursesPage() {
     setEditIndex(null);
     setShowForm(true);
   }
+
+  const handleDeleteClass = async (classId) => {
+    if (!classId) {
+      console.error('No class ID provided for deletion');
+      return;
+    }
+
+    if (window.confirm('Are you sure you want to delete this class?')) {
+      try {
+        await deleteClass(classId);
+      } catch (err) {
+        console.error('Error deleting class:', err);
+      }
+    }
+  };
 
   async function handleSubmit(data) {
     const weekDayToIndex = {
@@ -282,6 +338,15 @@ export default function CoursesPage() {
                         <div className="session-container">
                           {sessions.map((s, idx) => (
                             <div key={`${s.code}-${idx}`} className="session-card">
+                              <div className="session-actions">
+                                <button
+                                  className="delete-class-button"
+                                  onClick={() => handleDeleteClass(s.id)}
+                                  disabled={isDeleting}
+                                >
+                                  {isDeleting ? '...' : '×'}
+                                </button>
+                              </div>
                               <h5 className="session-title">{s.title || s.code}</h5>
                               <div className="session-meta">
                                 <div className="session-time">
