@@ -65,19 +65,6 @@ export default function CoursesList({ courses, handleAdd, handleEdit, handleDele
             <div>
               <span className="course-label">Professor:</span> {course.professor}
             </div>
-            <div>
-              <span className="course-label">Section:</span> {course.section}
-            </div>
-            <div>
-              <span className="course-label">Instructor Email:</span>{' '}
-              {course.instructorEmail || 'N/A'}
-            </div>
-            <div>
-              <span className="course-label">Duration:</span>{' '}
-              {course.startDate
-                ? `${new Date(course.startDate).toLocaleDateString()} - ${new Date(course.endDate).toLocaleDateString()}`
-                : 'N/A'}
-            </div>
           </div>
           <h4 className="schedule-heading">Schedule</h4>
           <div className="course-schedule">

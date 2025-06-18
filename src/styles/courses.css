@@ -183,29 +183,28 @@
 /*  MY COURSES styles  */
 .courses-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 2rem;
-  width: 100%;
-  padding: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
   animation: slideInFromBottom 0.7s ease-out;
 }
 
-/* Course card base styles */
 .course-card {
   position: relative;
-  background-color: #fff3cd !important;
+  background-color: #fff;
   border-radius: 17px;
-  padding: 1rem;
+  /* box-shadow: 0 10px 4px rgba(0, 0, 0, 0.1); */
+  padding: 1.25rem;
   margin-bottom: 16px;
   transition: all 0.2s ease;
+  position: relative;
   overflow: hidden;
-  color: #212529 !important;
-  min-height: 350px;
+  color: #333;
+  min-height: 220px;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  width: 100%;
 }
+
+/* Removed default green left border as courses have their own color */
 
 .course-card:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -215,129 +214,90 @@
 /* Course title row */
 .course-title-row {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
-  width: 100%;
-  padding-right: 90px; /* Space for action buttons */
+  margin-bottom: 8px;
+  padding-right: 7rem; /* Add padding to prevent overlap with action buttons */
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 /* Course name heading */
 .course-name {
-  font-size: 1.4rem;
+  margin: 0;
+  font-size: 1.1rem;
   font-weight: 600;
   color: #333;
-  margin: 0;
-  flex: 1;
-  min-width: 0;
   overflow-wrap: break-word;
   word-wrap: break-word;
   hyphens: auto;
+  max-width: 70%;
 }
 
-/* Course code badge */
-.course-code-badge {
-  background-color: #52796f;
-  color: white;
-  padding: 6px 12px;
-  border-radius: 6px;
+/* Course info styling */
+.course-info {
+  margin: 8px 0 12px;
   font-size: 0.9rem;
-  font-weight: 500;
-  white-space: nowrap;
-  margin-left: 1rem;
-}
-
-/* Course metadata */
-.course-metadata {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin: 0.5rem 0;
-  font-size: 0.95rem;
-  color: #444;
-}
-
-.course-metadata > div {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-/* Course label */
-.course-label {
-  font-weight: 600;
-  color: #52796f;
-  margin-right: 0.5rem;
-  display: inline-block;
-}
-
-/* Schedule section */
-.schedule-heading {
-  color: #333;
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin: 1rem 0 0.5rem 0;
-}
-
-/* Course schedule */
-.course-schedule {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-/* Schedule item */
-.schedule-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: rgba(47, 62, 70, 0.1);
-  padding: 0.75rem 1rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  color: #444;
-}
-
-.schedule-day {
-  font-weight: 600;
-  color: #52796f;
-}
-
-.schedule-time {
   color: #666;
 }
 
-/* Course grade */
+.course-info div {
+  margin-bottom: 0.5rem;
+}
+
+/* Schedule heading */
+.schedule-heading {
+  color: #444;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0.75rem 0;
+}
+
+/* Schedule item styling */
+.schedule-item {
+  background-color: #f8f8f8;
+  padding: 0.5rem;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/* Course grade styling */
 .course-grade {
-  margin-top: auto;
-  padding: 0.75rem 1rem;
-  background-color: rgba(47, 62, 70, 0.1);
-  border-radius: 6px;
-  font-size: 0.95rem;
+  margin-top: auto !important; /* Use !important to ensure it stays at bottom */
+  font-size: 0.9rem;
+  padding: 8px;
+  background-color: #f8f8f8;
+  border-radius: 4px;
+  display: inline-block;
   color: #444;
 }
 
 /* Action buttons container */
 .course-actions {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
+  top: 0.75rem;
+  right: 0.75rem;
   display: flex;
   gap: 0.5rem;
   z-index: 5;
 }
 
 /* Edit button */
-.edit-course-button {
+.course-actions .edit-course-button {
   background-color: #52796f;
-  color: #fff;
+  color: #cad2c5;
   border: none;
   border-radius: 4px;
   padding: 6px 12px;
   font-size: 0.85rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    background-color 0.2s,
+    transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .edit-course-button:hover {
@@ -354,7 +314,10 @@
   padding: 6px 12px;
   font-size: 0.85rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    background-color 0.2s,
+    transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .delete-course-button:hover {
@@ -563,34 +526,12 @@
   .schedule-item .modal-input {
     margin-bottom: 5px;
   }
-
-  .course-card {
-    min-height: 300px;
-    padding: 1.25rem;
-  }
-
-  .course-title-row {
-    flex-direction: column;
-    gap: 0.5rem;
-    padding-right: 0;
-    margin-bottom: 3rem; /* Space for action buttons */
-  }
-
-  .course-code-badge {
-    margin-left: 0;
-  }
-
-  .course-actions {
-    top: 4rem;
-    right: 1.25rem;
-  }
 }
 
 /* Medium screens: 2 columns for courses only */
 @media (min-width: 769px) and (max-width: 1199px) {
   .courses-list {
     grid-template-columns: repeat(2, 1fr);
-    gap: 1.75rem;
   }
 
   .class-group {
@@ -605,8 +546,7 @@
 /* Large screens: 3 columns for courses only */
 @media (min-width: 1200px) {
   .courses-list {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .class-group {
