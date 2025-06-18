@@ -5,7 +5,7 @@ const LoadingState = () => {
   return (
     <div className="goals-loading">
       <div className="goals-spinner"></div>
-      <p>Loading your goals...</p>
+      <p>Loading your goals....</p>
     </div>
   );
 };
