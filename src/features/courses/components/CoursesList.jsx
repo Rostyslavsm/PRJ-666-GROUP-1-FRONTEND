@@ -30,14 +30,14 @@ export default function CoursesList({ courses, handleAdd, handleEdit, handleDele
 
   return (
     <div className="courses-list">
-      {courses.map((course, idx) => (
+      {courses.map((course) => (
         <div
-          key={`${course.code}-${idx}`}
+          key={course._id}
           className="course-card"
           style={{ borderLeft: `5px solid ${course.color || '#cad2c5'}` }}
         >
           <div className="course-actions">
-            <button className="edit-course-button" onClick={() => handleEdit(course, idx)}>
+            <button className="edit-course-button" onClick={() => handleEdit(course)}>
               Edit
             </button>
             <button

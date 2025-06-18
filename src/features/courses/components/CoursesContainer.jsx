@@ -5,9 +5,9 @@ import TabsBar from '../../../componentShared/TabsBar';
 import CourseForm from './CourseForm';
 import ClassesList from './ClassesList';
 import CoursesList from './CoursesList';
-import { useCourseSubmit, useClassDelete, useCourseDeletion } from '../';
+import { useCourseSubmit, useClassDelete, useCourseDeletion, useCourseEdit } from '../';
 import { useCourses } from '../hooks/useCourses';
-import { secondsToTime, getWeekday } from '../utils/timeUtils';
+import { secondsToTime, getWeekday, weekdayToIndex } from '../utils/timeUtils';
 
 // Define tab constants for better readability
 const TABS = {
@@ -52,6 +52,14 @@ export default function CoursesContainer() {
     resetState: resetCourseDeletionState,
   } = useCourseDeletion();
 
+  const {
+    editCourse,
+    isEditing,
+    error: editError,
+    success: editSuccess,
+    resetState: resetEditState,
+  } = useCourseEdit();
+
   // Reset the submit state when the form is closed
   useEffect(() => {
     if (!showForm) {
@@ -94,6 +102,15 @@ export default function CoursesContainer() {
       refreshCourses();
     }
   }, [activeTab]);
+
+  // Add new useEffect for edit success
+  useEffect(() => {
+    if (editSuccess) {
+      setShowForm(false);
+      refreshCourses();
+      resetEditState();
+    }
+  }, [editSuccess, refreshCourses, resetEditState]);
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -158,9 +175,39 @@ export default function CoursesContainer() {
     }
   };
 
-  const handleEditCourse = (course, idx) => {
-    setEditData(course);
-    setEditIndex(idx);
+  const handleEditCourse = (course) => {
+    // Transform the course data to match the form structure
+    const formattedCourse = {
+      title: course.title,
+      code: course.code,
+      section: course.section || 'A',
+      color: course.color || '#4054e7',
+      instructor: {
+        name: course.professor || '',
+        email: course.instructorEmail || '',
+        availableTimeSlots: course.instructorTimeSlots?.map((slot) => ({
+          weekday: weekdayToIndex(slot.weekDay),
+          startTime: slot.startTime,
+          endTime: slot.endTime,
+        })) || [{ weekday: 1, startTime: '09:00', endTime: '10:00' }],
+      },
+      startDate: course.startDate || new Date().toISOString().split('T')[0],
+      endDate:
+        course.endDate ||
+        new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      schedule: course.schedule.map((s) => {
+        const [startTime, endTime] = s.time.split('–');
+        return {
+          classType: s.classType || 'lecture',
+          weekday: weekdayToIndex(s.weekDay),
+          startTime: startTime.trim(),
+          endTime: endTime.trim(),
+          location: s.location || 'TBD',
+        };
+      }),
+    };
+
+    setEditData({ ...formattedCourse, _id: course._id });
     setShowForm(true);
   };
 
@@ -180,7 +227,7 @@ export default function CoursesContainer() {
     }
 
     try {
-      const newCourse = {
+      const courseData = {
         title: data.title,
         code: data.code,
         section: data.section,
@@ -193,61 +240,68 @@ export default function CoursesContainer() {
           email: data.instructor.email,
           availableTimeSlots: data.instructor.availableTimeSlots.map((s) => ({
             weekday: typeof s.weekday === 'number' ? s.weekday : weekdayToIndex(s.weekDay),
-            startTime: s.startTime, // Time conversion will be handled in useCourseSubmit
-            endTime: s.endTime, // Time conversion will be handled in useCourseSubmit
+            startTime: s.startTime,
+            endTime: s.endTime,
           })),
         },
         schedule: data.schedule.map((s) => ({
           classType: s.classType || 'lecture',
           weekday: typeof s.weekday === 'number' ? s.weekday : weekdayToIndex(s.weekDay),
-          startTime: s.startTime, // Time conversion will be handled in useCourseSubmit
-          endTime: s.endTime, // Time conversion will be handled in useCourseSubmit
+          startTime: s.startTime,
+          endTime: s.endTime,
           location: s.location || 'TBD',
         })),
       };
 
-      console.log('📤 Submitting course to backend:', JSON.stringify(newCourse, null, 2));
-
-      const result = await submitCourse(newCourse);
+      let result;
+      if (editData?._id) {
+        // Edit existing course
+        console.log('📝 Updating course:', editData._id);
+        result = await editCourse(editData._id, courseData);
+      } else {
+        // Create new course
+        console.log('📤 Creating new course');
+        result = await submitCourse(courseData);
+      }
 
       if (result.success) {
-        console.log('✅ Course created:', result);
+        console.log('✅ Operation successful:', result);
         setShowForm(false);
 
-        // Get the created course from the response
-        const createdCourse = result.course;
+        if (!editData?._id) {
+          // Only add to UI immediately for new courses
+          addCourse({
+            _id: result.courseId || (result.course && result.course._id) || `temp-${Date.now()}`,
+            title: result.course?.title || courseData.title,
+            code: result.course?.code || courseData.code,
+            section: result.course?.section || courseData.section,
+            professor: result.course?.instructor?.name || courseData.instructor.name,
+            color: result.course?.color || courseData.color,
+            grade: 0,
+            schedule: (result.course?.schedule || courseData.schedule).map((s) => ({
+              time:
+                typeof s.startTime === 'number'
+                  ? `${secondsToTime(s.startTime)}–${secondsToTime(s.endTime)}`
+                  : `${s.startTime}–${s.endTime}`,
+              weekDay: getWeekday(s.weekday),
+            })),
+          });
+        }
 
-        // Add the new course to the UI
-        addCourse({
-          _id: result.courseId || (createdCourse && createdCourse._id) || `temp-${Date.now()}`,
-          title: createdCourse?.title || newCourse.title,
-          code: createdCourse?.code || newCourse.code,
-          section: createdCourse?.section || newCourse.section,
-          professor: createdCourse?.instructor?.name || newCourse.instructor.name,
-          color: createdCourse?.color || newCourse.color,
-          grade: 0,
-          schedule: (createdCourse?.schedule || newCourse.schedule).map((s) => ({
-            time:
-              typeof s.startTime === 'number'
-                ? `${secondsToTime(s.startTime)}–${secondsToTime(s.endTime)}`
-                : `${s.startTime}–${s.endTime}`,
-            weekDay: getWeekday(s.weekday),
-          })),
-        });
-
-        // Refresh classes to show the newly created classes
-        console.log('🔄 Refreshing classes after course creation');
+        // Refresh data
         await refreshClasses();
+        await refreshCourses();
 
-        // Switch to the Classes tab to show the newly created classes
-        setActiveTab(TABS.CLASSES);
-        console.log('🔄 Switched to Classes tab to show new classes');
+        // Switch to Classes tab for new courses
+        if (!editData?._id) {
+          setActiveTab(TABS.CLASSES);
+        }
       } else {
-        console.error('❌ Error creating course:', result.errors);
-        alert(`Failed to create course: ${result.errors?.join(', ') || 'Unknown error'}`);
+        console.error('❌ Operation failed:', result.errors);
+        alert(`Operation failed: ${result.errors?.join(', ') || 'Unknown error'}`);
       }
     } catch (error) {
-      console.error('❌ Exception during course submission:', error);
+      console.error('❌ Exception during operation:', error);
       alert(`An error occurred: ${error.message}`);
     }
   }
@@ -291,15 +345,25 @@ export default function CoursesContainer() {
               <>
                 <Modal
                   isOpen={showForm}
-                  onClose={() => setShowForm(false)}
+                  onClose={() => {
+                    setShowForm(false);
+                    setEditData(null);
+                    resetState();
+                    resetEditState();
+                  }}
                   title={editData ? 'Edit Course' : 'Add New Course'}
                 >
                   <CourseForm
                     initialData={editData}
                     onSubmit={handleSubmit}
-                    onCancel={() => setShowForm(false)}
-                    isSubmitting={isSubmitting}
-                    error={submitError}
+                    onCancel={() => {
+                      setShowForm(false);
+                      setEditData(null);
+                      resetState();
+                      resetEditState();
+                    }}
+                    isSubmitting={isSubmitting || isEditing}
+                    error={submitError || editError}
                   />
                 </Modal>
 
