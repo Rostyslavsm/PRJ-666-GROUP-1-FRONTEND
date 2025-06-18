@@ -7,6 +7,7 @@
 export { useCourseSubmit } from './hooks/useCourseSubmit';
 export { useClassDelete } from './hooks/useClassDelete';
 export { useCourseDeletion } from './hooks/useCourseDeletion';
+export { useCourseEdit } from './hooks/useCourseEdit';
 export { useCourses } from './hooks/useCourses';
 
 // Components

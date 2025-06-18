@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
@@ -24,8 +24,9 @@ export default function CourseForm({ initialData, onSubmit, onCancel, isSubmitti
     formState: { errors },
     setValue,
     watch,
+    reset,
   } = useForm({
-    defaultValues: initialData || {
+    defaultValues: {
       title: '',
       code: '',
       section: 'A',
@@ -42,6 +43,33 @@ export default function CourseForm({ initialData, onSubmit, onCancel, isSubmitti
       ],
     },
   });
+
+  // Reset form when initialData changes
+  useEffect(() => {
+    if (initialData) {
+      reset({
+        ...initialData,
+        startDate: initialData.startDate || '',
+        endDate: initialData.endDate || '',
+        instructor: {
+          name: initialData.instructor?.name || '',
+          email: initialData.instructor?.email || '',
+          availableTimeSlots: initialData.instructor?.availableTimeSlots || [
+            { weekday: 1, startTime: '09:00', endTime: '10:00' },
+          ],
+        },
+        schedule: initialData.schedule || [
+          {
+            classType: 'lecture',
+            weekday: 1,
+            startTime: '09:00',
+            endTime: '10:00',
+            location: 'TBD',
+          },
+        ],
+      });
+    }
+  }, [initialData, reset]);
 
   const {
     fields: scheduleFields,
@@ -272,7 +300,7 @@ export default function CourseForm({ initialData, onSubmit, onCancel, isSubmitti
           Cancel
         </button>
         <button type="submit" disabled={isSubmitting} className="modal-button modal-submit-button">
-          {isSubmitting ? 'Saving...' : 'Save'}
+          {isSubmitting ? 'Saving...' : initialData ? 'Update Course' : 'Create Course'}
         </button>
       </div>
 

@@ -30,14 +30,14 @@ export default function CoursesList({ courses, handleAdd, handleEdit, handleDele
 
   return (
     <div className="courses-list">
-      {courses.map((course, idx) => (
+      {courses.map((course) => (
         <div
-          key={`${course.code}-${idx}`}
+          key={course._id}
           className="course-card"
           style={{ borderLeft: `5px solid ${course.color || '#cad2c5'}` }}
         >
           <div className="course-actions">
-            <button className="edit-course-button" onClick={() => handleEdit(course, idx)}>
+            <button className="edit-course-button" onClick={() => handleEdit(course)}>
               Edit
             </button>
             <button
@@ -64,6 +64,19 @@ export default function CoursesList({ courses, handleAdd, handleEdit, handleDele
           <div className="course-metadata">
             <div>
               <span className="course-label">Professor:</span> {course.professor}
+            </div>
+            <div>
+              <span className="course-label">Section:</span> {course.section}
+            </div>
+            <div>
+              <span className="course-label">Instructor Email:</span>{' '}
+              {course.instructorEmail || 'N/A'}
+            </div>
+            <div>
+              <span className="course-label">Duration:</span>{' '}
+              {course.startDate
+                ? `${new Date(course.startDate).toLocaleDateString()} - ${new Date(course.endDate).toLocaleDateString()}`
+                : 'N/A'}
             </div>
           </div>
           <h4 className="schedule-heading">Schedule</h4>

@@ -50,16 +50,26 @@ export function useCourses() {
       const courses = courseData.courses || [];
 
       const fetchedCourses = courses.map((course) => ({
-        _id: course._id, // Store the course ID for delete operations
+        _id: course._id,
         title: course.title,
         code: course.code,
         section: course.section || 'A',
         professor: course.instructor?.name,
+        instructorEmail: course.instructor?.email,
+        instructorTimeSlots: course.instructor?.availableTimeSlots?.map((slot) => ({
+          weekDay: getWeekday(slot.weekday),
+          startTime: secondsToTime(slot.startTime),
+          endTime: secondsToTime(slot.endTime),
+        })),
         color: course.color || '#cad2c5',
         grade: 0,
+        startDate: course.startDate,
+        endDate: course.endDate,
         schedule: course.schedule.map((s) => ({
           time: `${secondsToTime(s.startTime)}–${secondsToTime(s.endTime)}`,
           weekDay: getWeekday(s.weekday),
+          classType: s.classType || 'lecture',
+          location: s.location || 'TBD',
         })),
       }));
       setMyCourses(fetchedCourses);
@@ -126,11 +136,21 @@ export function useCourses() {
         code: course.code,
         section: course.section || 'A',
         professor: course.instructor?.name,
+        instructorEmail: course.instructor?.email,
+        instructorTimeSlots: course.instructor?.availableTimeSlots?.map((slot) => ({
+          weekDay: getWeekday(slot.weekday),
+          startTime: secondsToTime(slot.startTime),
+          endTime: secondsToTime(slot.endTime),
+        })),
         color: course.color || '#cad2c5',
         grade: 0,
+        startDate: course.startDate,
+        endDate: course.endDate,
         schedule: course.schedule.map((s) => ({
           time: `${secondsToTime(s.startTime)}–${secondsToTime(s.endTime)}`,
           weekDay: getWeekday(s.weekday),
+          classType: s.classType || 'lecture',
+          location: s.location || 'TBD',
         })),
       }));
       setMyCourses(fetchedCourses);
@@ -202,11 +222,21 @@ export function useCourses() {
         code: course.code,
         section: course.section || 'A',
         professor: course.instructor?.name,
+        instructorEmail: course.instructor?.email,
+        instructorTimeSlots: course.instructor?.availableTimeSlots?.map((slot) => ({
+          weekDay: getWeekday(slot.weekday),
+          startTime: secondsToTime(slot.startTime),
+          endTime: secondsToTime(slot.endTime),
+        })),
         color: course.color || '#cad2c5',
         grade: 0,
+        startDate: course.startDate,
+        endDate: course.endDate,
         schedule: course.schedule.map((s) => ({
           time: `${secondsToTime(s.startTime)}–${secondsToTime(s.endTime)}`,
           weekDay: getWeekday(s.weekday),
+          classType: s.classType || 'lecture',
+          location: s.location || 'TBD',
         })),
       }));
       console.log('🔄 Setting myCourses with new data:', fetchedCourses);
