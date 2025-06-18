@@ -1,5 +1,5 @@
 // src/features/goals/hooks/useGoals.js
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { fetchGoals, fetchCourses } from '../services/goalService';
 
 export const useGoals = () => {
@@ -7,27 +7,36 @@ export const useGoals = () => {
   const [goals, setGoals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [operationLoading, setOperationLoading] = useState(false);
 
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        setLoading(true);
-        const [coursesData, goalsData] = await Promise.all([
-          fetchCourses(),
-          fetchGoals(true), // Expand courses data
-        ]);
-        setCourses(coursesData);
-        setGoals(goalsData);
-      } catch (err) {
-        console.error('Failed to load data:', err);
-        setError(err.message || 'Failed to load data');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadData();
+  const loadData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const [coursesData, goalsData] = await Promise.all([fetchCourses(), fetchGoals(true)]);
+      setCourses(coursesData);
+      setGoals(goalsData);
+    } catch (err) {
+      console.error('Failed to load data:', err);
+      setError(err.message || 'Failed to load data');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  return { courses, goals, loading, error, setGoals };
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
+  return {
+    courses,
+    goals,
+    loading,
+    error,
+    operationLoading,
+    setGoals,
+    refreshGoals: loadData,
+    setOperationLoading,
+  };
 };

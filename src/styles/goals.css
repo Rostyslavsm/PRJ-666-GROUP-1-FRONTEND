@@ -1,5 +1,5 @@
 /* src/styles/goals.css
-.gradegoals-container {
+.goals-container {
   min-height: 100vh;
   background: linear-gradient(135deg, #f0f7ff 0%, #e6f0ff 50%, #d4e4ff 100%);
   padding: 2rem 0;
@@ -8,7 +8,7 @@
   margin: 0 auto;
 }
 
-.gradegoals-container::before {
+.goals-container::before {
   content: '';
   position: absolute;
   top: 0;
@@ -19,7 +19,7 @@
   z-index: 0;
 }
 
-.gradegoals-container::after {
+.goals-container::after {
   content: '';
   position: absolute;
   bottom: 0;
@@ -30,7 +30,7 @@
   z-index: 0;
 } */
 
-.gradegoals-content {
+.goals-content {
   max-width: 56rem;
   margin: 0 auto;
   padding: 0 1rem;
@@ -39,7 +39,7 @@
 }
 
 /* Add CSS for document icon in empty state */
-.gradegoals-document-icon {
+.goals-document-icon {
   width: 64px;
   height: 80px;
   position: relative;
@@ -48,7 +48,7 @@
   margin: 0 auto;
 }
 
-.gradegoals-document-icon::before {
+.goals-document-icon::before {
   content: '';
   position: absolute;
   top: -8px;
@@ -60,7 +60,7 @@
   border-radius: 2px 2px 0 0;
 }
 
-.gradegoals-document-icon::after {
+.goals-document-icon::after {
   content: '';
   position: absolute;
   top: 15px;
@@ -73,14 +73,14 @@
 }
 
 /* Edit icon using pure CSS - Fixed */
-.gradegoals-edit-icon {
+.goals-edit-icon {
   width: 18px;
   height: 18px;
   position: relative;
   display: block;
 }
 
-.gradegoals-edit-icon::before {
+.goals-edit-icon::before {
   content: '';
   position: absolute;
   top: 0;
@@ -91,7 +91,7 @@
   border-radius: 2px;
 }
 
-.gradegoals-edit-icon::after {
+.goals-edit-icon::after {
   content: '';
   position: absolute;
   top: -4px;
@@ -104,15 +104,15 @@
 }
 
 /* */
-.gradegoals-del-icon {
+.goals-del-icon {
   width: 18px;
   height: 18px;
   position: relative;
   display: block;
 }
 
-.gradegoals-del-icon::before,
-.gradegoals-del-icon::after {
+.goals-del-icon::before,
+.goals-del-icon::after {
   content: '';
   position: absolute;
   left: 50%;
@@ -121,19 +121,19 @@
   transform-origin: center;
 }
 
-.gradegoals-del-icon::before {
+.goals-del-icon::before {
   width: 2px;
   height: 100%;
   transform: translate(-50%, -50%) rotate(45deg);
 }
 
-.gradegoals-del-icon::after {
+.goals-del-icon::after {
   width: 2px;
   height: 100%;
   transform: translate(-50%, -50%) rotate(-45deg);
 }
 
-.gradegoals-del-icon span {
+.goals-del-icon span {
   content: '';
   position: absolute;
   width: 100%;
@@ -145,26 +145,26 @@
 }
 
 /* Course display in edit form */
-.gradegoals-course-display {
+.goals-course-display {
   background: rgba(243, 244, 246, 0.6);
   border-radius: 12px;
   padding: 0.8rem 1rem;
 }
 
-.gradegoals-course-name {
+.goals-course-name {
   font-weight: 600;
   font-size: 1.05rem;
   color: #1e40af;
 }
 
-.gradegoals-course-details {
+.goals-course-details {
   font-size: 0.9rem;
   color: #6b7280;
   margin-top: 0.25rem;
 }
 
 /* Rest of the CSS remains the same */
-.gradegoals-header {
+.goals-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -177,20 +177,20 @@
   border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
-.gradegoals-title {
+.goals-title {
   font-size: 1.875rem;
   font-weight: 700;
   color: #1e40af;
   margin: 0;
 }
 
-.gradegoals-subtitle {
+.goals-subtitle {
   color: #4b5563;
   margin-top: 0.5rem;
   font-size: 1rem;
 }
 
-.gradegoals-button {
+.goals-button {
   padding: 0.75rem 1.5rem;
   border-radius: 12px;
   font-weight: 600;
@@ -201,25 +201,25 @@
   box-shadow: 0 4px 6px rgba(79, 70, 229, 0.1);
 }
 
-.gradegoals-button-primary {
+.goals-button-primary {
   background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
   color: white;
 }
 
-.gradegoals-button-primary:hover {
+.goals-button-primary:hover {
   background: linear-gradient(135deg, #3730a3 0%, #4f46e5 100%);
   transform: translateY(-2px);
   box-shadow: 0 6px 12px rgba(79, 70, 229, 0.2);
 }
 
-.gradegoals-button-disabled {
+.goals-button-disabled {
   background: #d1d5db;
   color: #6b7280;
   cursor: not-allowed;
   box-shadow: none;
 }
 
-.gradegoals-form-container {
+.goals-form-container {
   background: rgba(255, 255, 255, 0.85);
   border-radius: 16px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
@@ -229,7 +229,7 @@
   backdrop-filter: blur(10px);
 }
 
-.gradegoals-form-title {
+.goals-form-title {
   font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
@@ -237,11 +237,11 @@
   text-align: center;
 }
 
-.gradegoals-form-group {
+.goals-form-group {
   margin-bottom: 1.5rem;
 }
 
-.gradegoals-form-label {
+.goals-form-label {
   display: block;
   color: #374151;
   font-weight: 600;
@@ -249,8 +249,8 @@
   font-size: 1.05rem;
 }
 
-.gradegoals-form-select,
-.gradegoals-form-input {
+.goals-form-select,
+.goals-form-input {
   width: 100%;
   padding: 0.8rem 1rem;
   border: 1px solid #d1d5db;
@@ -260,41 +260,41 @@
   transition: all 0.3s ease;
 }
 
-.gradegoals-form-select:focus,
-.gradegoals-form-input:focus {
+.goals-form-select:focus,
+.goals-form-input:focus {
   outline: none;
   border-color: #4f46e5;
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
   background: white;
 }
 
-.gradegoals-error {
+.goals-error {
   margin-top: 0.5rem;
   color: #ef4444;
   font-size: 0.9rem;
   font-weight: 500;
 }
 
-.gradegoals-form-actions {
+.goals-form-actions {
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
   margin-top: 1rem;
 }
 
-.gradegoals-button-secondary {
+.goals-button-secondary {
   background: rgba(255, 255, 255, 0.7);
   color: #374151;
   font-weight: 600;
   border: 1px solid #d1d5db;
 }
 
-.gradegoals-button-secondary:hover {
+.goals-button-secondary:hover {
   background: rgba(255, 255, 255, 1);
   transform: translateY(-2px);
 }
 
-.gradegoals-empty-state {
+.goals-empty-state {
   background: rgba(255, 255, 255, 0.85);
   border-radius: 16px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
@@ -304,19 +304,19 @@
   border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
-.gradegoals-empty-icon {
+.goals-empty-icon {
   color: #a5b4fc;
   margin-bottom: 1.5rem;
 }
 
-.gradegoals-empty-title {
+.goals-empty-title {
   font-size: 1.75rem;
   font-weight: 700;
   color: #1e40af;
   margin-bottom: 1rem;
 }
 
-.gradegoals-empty-text {
+.goals-empty-text {
   color: #6b7280;
   margin-bottom: 2rem;
   font-size: 1.1rem;
@@ -325,19 +325,19 @@
   margin-right: auto;
 }
 
-.gradegoals-grid {
+.goals-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.5rem;
 }
 
 @media (min-width: 768px) {
-  .gradegoals-grid {
+  .goals-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-.gradegoals-card {
+.goals-card {
   background: rgba(255, 255, 255, 0.85);
   border-radius: 16px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
@@ -348,43 +348,43 @@
   transform: translateY(0);
 }
 
-.gradegoals-card:hover {
+.goals-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
   background: rgba(255, 255, 255, 0.95);
 }
 
-.gradegoals-card-content {
+.goals-card-content {
   padding: 1.75rem;
 }
 
-.gradegoals-card-header {
+.goals-card-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 1.5rem;
 }
 
-.gradegoals-card-title {
+.goals-card-title {
   font-size: 1.25rem;
   font-weight: 700;
   color: #1e40af;
   margin: 0;
 }
 
-.gradegoals-card-subtitle {
+.goals-card-subtitle {
   color: #6b7280;
   font-size: 0.95rem;
   margin-top: 0.25rem;
 }
 
-.gradegoals-card-actions {
+.goals-card-actions {
   display: flex;
   gap: 0.75rem;
 }
 
-.gradegoals-action-button,
-.gradegoals-delete-button {
+.goals-action-button,
+.goals-delete-button {
   background: rgba(255, 255, 255, 0.6);
   border-radius: 10px;
   width: 36px;
@@ -396,57 +396,57 @@
   transition: all 0.3s ease;
 }
 
-.gradegoals-action-button:hover {
+.goals-action-button:hover {
   background: rgba(79, 70, 229, 0.1);
   transform: scale(1.1);
 }
 
-.gradegoals-delete-button:hover {
+.goals-delete-button:hover {
   background: rgba(239, 68, 68, 0.1);
   transform: scale(1.1);
 }
 
-.gradegoals-stats-grid {
+.goals-stats-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1.25rem;
   margin-bottom: 1.5rem;
 }
 
-.gradegoals-stat-box {
+.goals-stat-box {
   background: rgba(243, 244, 246, 0.6);
   border-radius: 12px;
   padding: 1.25rem;
   transition: all 0.3s ease;
 }
 
-.gradegoals-stat-box:hover {
+.goals-stat-box:hover {
   background: rgba(243, 244, 246, 0.9);
   transform: translateY(-3px);
 }
 
-.gradegoals-stat-label {
+.goals-stat-label {
   font-size: 0.95rem;
   color: #6b7280;
   margin-bottom: 0.5rem;
   font-weight: 600;
 }
 
-.gradegoals-stat-value {
+.goals-stat-value {
   font-size: 1.75rem;
   font-weight: 800;
   color: #1f2937;
 }
 
-.gradegoals-target-value {
+.goals-target-value {
   color: #4f46e5;
 }
 
-.gradegoals-progress-container {
+.goals-progress-container {
   margin-bottom: 1.25rem;
 }
 
-.gradegoals-progress-info {
+.goals-progress-info {
   display: flex;
   justify-content: space-between;
   font-size: 0.95rem;
@@ -455,7 +455,7 @@
   font-weight: 600;
 }
 
-.gradegoals-progress-bar {
+.goals-progress-bar {
   width: 100%;
   background: rgba(229, 231, 235, 0.7);
   border-radius: 9999px;
@@ -463,13 +463,13 @@
   overflow: hidden;
 }
 
-.gradegoals-progress-fill {
+.goals-progress-fill {
   height: 100%;
   border-radius: 9999px;
   transition: width 0.8s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
-.gradegoals-card-footer {
+.goals-card-footer {
   margin-top: 1.5rem;
   padding-top: 1.25rem;
   border-top: 1px solid rgba(243, 244, 246, 0.6);
@@ -479,20 +479,20 @@
   color: #6b7280;
 }
 
-.gradegoals-status-indicator {
+.goals-status-indicator {
   display: flex;
   align-items: center;
   font-weight: 600;
 }
 
-.gradegoals-status-dot {
+.goals-status-dot {
   width: 10px;
   height: 10px;
   border-radius: 9999px;
   margin-right: 8px;
 }
 
-.gradegoals-info-text {
+.goals-info-text {
   margin-top: 2.5rem;
   text-align: center;
   font-size: 1rem;
@@ -517,22 +517,22 @@
   }
 }
 
-.gradegoals-card {
+.goals-card {
   animation: fadeIn 0.6s ease forwards;
   opacity: 0;
 }
 
 /* Add delay for each card */
-.gradegoals-card:nth-child(1) {
+.goals-card:nth-child(1) {
   animation-delay: 0.1s;
 }
-.gradegoals-card:nth-child(2) {
+.goals-card:nth-child(2) {
   animation-delay: 0.2s;
 }
-.gradegoals-card:nth-child(3) {
+.goals-card:nth-child(3) {
   animation-delay: 0.3s;
 }
-.gradegoals-card:nth-child(4) {
+.goals-card:nth-child(4) {
   animation-delay: 0.4s;
 }
 
@@ -549,11 +549,11 @@
   }
 }
 
-.gradegoals-container::before {
+.goals-container::before {
   animation: float 8s ease-in-out infinite;
 }
 
-.gradegoals-container::after {
+.goals-container::after {
   animation: float 12s ease-in-out infinite;
   animation-delay: 2s;
 }

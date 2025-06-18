@@ -3,17 +3,17 @@ import React from 'react';
 
 const EmptyState = ({ courses, onAddGoal }) => {
   return (
-    <div className="gradegoals-empty-state">
-      <div className="gradegoals-empty-icon">
-        <div className="gradegoals-document-icon"></div>
+    <div className="goals-empty-state">
+      <div className="goals-empty-icon">
+        <div className="goals-document-icon"></div>
       </div>
-      <h3 className="gradegoals-empty-title">No Goals Set Yet</h3>
-      <p className="gradegoals-empty-text">Start by setting a goal for one of your courses.</p>
+      <h3 className="goals-empty-title">No Goals Set Yet</h3>
+      <p className="goals-empty-text">Start by setting a goal for one of your courses.</p>
       <button
         onClick={onAddGoal}
         disabled={courses.length === 0}
-        className={`gradegoals-button ${
-          courses.length === 0 ? 'gradegoals-button-disabled' : 'gradegoals-button-primary'
+        className={`goals-button ${
+          courses.length === 0 ? 'goals-button-disabled' : 'goals-button-primary'
         }`}
       >
         {courses.length === 0 ? 'No Courses Available' : 'Create Your First Goal'}

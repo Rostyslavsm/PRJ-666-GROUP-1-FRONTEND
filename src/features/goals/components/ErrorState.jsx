@@ -3,11 +3,11 @@ import React from 'react';
 
 const ErrorState = ({ error, onRetry }) => {
   return (
-    <div className="gradegoals-error-state">
-      <div className="gradegoals-error-icon">!</div>
-      <h3 className="gradegoals-error-title">Error Loading Data</h3>
-      <p className="gradegoals-error-text">{error}</p>
-      <button onClick={onRetry} className="gradegoals-button gradegoals-button-primary">
+    <div className="goals-error-state">
+      <div className="goals-error-icon">!</div>
+      <h3 className="goals-error-title">Error Loading Data</h3>
+      <p className="goals-error-text">{error}</p>
+      <button onClick={onRetry} className="goals-button goals-button-primary">
         Try Again
       </button>
     </div>

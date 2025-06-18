@@ -1,4 +1,3 @@
-// goals/components/GoalsPage
 import React from 'react';
 import { useGoals } from '@/features/goals/hooks/useGoals';
 import { useGoalForm } from '@/features/goals/hooks/useGoalForm';
@@ -15,7 +14,8 @@ import ErrorState from '@/features/goals/components/ErrorState';
 import LoadingState from '@/features/goals/components/LoadingState';
 
 const GoalsPage = () => {
-  const { courses, goals, loading, error, setGoals } = useGoals();
+  const { courses, goals, loading, error, operationLoading, setGoals, refreshGoals } = useGoals();
+
   const {
     showForm,
     setShowForm,
@@ -28,44 +28,53 @@ const GoalsPage = () => {
     editingCourse,
     setEditingCourse,
     resetForm,
+    isSubmitting,
+    setIsSubmitting,
+    handleInputChange,
   } = useGoalForm();
 
   const availableCourses = getAvailableCourses(courses, goals);
 
-  const handleFormDataChange = (field, value) => {
-    setFormData({ ...formData, [field]: value });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     const errors = validateGoalForm(formData, editingId);
     setFormErrors(errors);
-    if (Object.keys(errors).length > 0) return;
+    if (Object.keys(errors).length > 0) {
+      setIsSubmitting(false);
+      return;
+    }
 
     try {
       if (editingId) {
-        // Update existing goal
         const updatedGoal = await updateGoal(editingId, parseFloat(formData.targetGrade));
-        setGoals(goals.map((goal) => (goal._id === editingId ? updatedGoal : goal)));
+        setGoals((prev) => prev.map((goal) => (goal._id === editingId ? updatedGoal : goal)));
       } else {
-        // Add new goal
         const newGoal = await createGoal({
           courseId: formData.courseId,
           targetGrade: parseFloat(formData.targetGrade),
         });
-        setGoals([...goals, newGoal]);
+        setGoals((prev) => [...prev, newGoal]);
       }
-
       resetForm();
     } catch (err) {
       console.error('Failed to save goal:', err);
-      setFormErrors({ submit: err.message || 'Failed to save goal' });
+      setFormErrors({
+        submit: err.message || 'Failed to save goal',
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleEdit = (goal) => {
     const course = getCourseById(courses, goal.courseId);
+    if (!course) {
+      console.error('Course not found for goal:', goal);
+      return;
+    }
+
     setEditingId(goal._id);
     setEditingCourse(course);
     setFormData({
@@ -76,22 +85,35 @@ const GoalsPage = () => {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this goal?')) {
-      try {
-        const result = await deleteGoal(id);
-        if (result.success) {
-          setGoals(goals.filter((goal) => goal._id !== id));
-        }
-      } catch (err) {
-        console.error('Failed to delete goal:', err);
+    if (!window.confirm('Are you sure you want to delete this goal?')) return;
+
+    try {
+      const originalGoals = [...goals];
+      const deletedGoal = goals.find((g) => g._id === id);
+
+      // Optimistic update
+      setGoals((prev) => prev.filter((goal) => goal._id !== id));
+
+      const { success } = await deleteGoal(id);
+
+      if (!success) {
+        throw new Error('Failed to delete goal on server');
       }
+
+      // Silent refresh to ensure consistency
+      await refreshGoals();
+    } catch (err) {
+      // Revert on error
+      setGoals(originalGoals);
+      alert(err.message || 'Failed to delete goal');
+      console.error('Delete error:', err);
     }
   };
 
-  if (loading && goals.length === 0) {
+  if (loading && !goals.length) {
     return (
-      <div className="gradegoals-container">
-        <div className="gradegoals-content">
+      <div className="goals-container">
+        <div className="goals-content">
           <LoadingState />
         </div>
       </div>
@@ -100,29 +122,27 @@ const GoalsPage = () => {
 
   if (error) {
     return (
-      <div className="gradegoals-container">
-        <div className="gradegoals-content">
-          <ErrorState error={error} onRetry={() => window.location.reload()} />
+      <div className="goals-container">
+        <div className="goals-content">
+          <ErrorState error={error} onRetry={refreshGoals} />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="gradegoals-container">
-      <div className="gradegoals-content">
-        <div className="gradegoals-header">
+    <div className="goals-container">
+      <div className="goals-content">
+        <div className="goals-header">
           <div>
-            <h1 className="gradegoals-title">Study Goals</h1>
-            <p className="gradegoals-subtitle">Set and track your academic targets</p>
+            <h1 className="goals-title">Study Goals</h1>
+            <p className="goals-subtitle">Set and track your academic targets</p>
           </div>
           <button
             onClick={() => setShowForm(true)}
-            disabled={availableCourses.length === 0}
-            className={`gradegoals-button ${
-              availableCourses.length === 0
-                ? 'gradegoals-button-disabled'
-                : 'gradegoals-button-primary'
+            disabled={availableCourses.length === 0 || operationLoading}
+            className={`goals-button ${
+              availableCourses.length === 0 ? 'goals-button-disabled' : 'goals-button-primary'
             }`}
           >
             Add New Goal
@@ -137,28 +157,31 @@ const GoalsPage = () => {
           editingCourse={editingCourse}
           courses={courses}
           goals={goals}
-          onFormDataChange={handleFormDataChange}
+          onFormDataChange={handleInputChange}
           onCancel={resetForm}
           onSubmit={handleSubmit}
-          loading={loading}
+          loading={isSubmitting}
         />
 
         {goals.length === 0 ? (
           <EmptyState courses={courses} onAddGoal={() => setShowForm(true)} />
         ) : (
-          <div className="gradegoals-grid">
+          <div className="goals-grid">
             {goals.map((goal) => {
               const course = getCourseById(courses, goal.courseId);
-              if (!course) return null;
+              if (!course) {
+                console.warn('Missing course for goal:', goal);
+                return null;
+              }
 
               return (
                 <GoalCard
                   key={goal._id}
                   goal={goal}
                   course={course}
-                  onEdit={handleEdit}
-                  onDelete={handleDelete}
-                  loading={loading}
+                  onEdit={() => handleEdit(goal)}
+                  onDelete={() => handleDelete(goal._id)}
+                  disabled={operationLoading}
                 />
               );
             })}
@@ -166,7 +189,7 @@ const GoalsPage = () => {
         )}
 
         {!showForm && availableCourses.length > 0 && (
-          <div className="gradegoals-info-text">
+          <div className="goals-info-text">
             <p>
               You can set goals for {availableCourses.length} more course
               {availableCourses.length > 1 ? 's' : ''}

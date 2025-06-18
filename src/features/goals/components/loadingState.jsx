@@ -3,8 +3,8 @@ import React from 'react';
 
 const LoadingState = () => {
   return (
-    <div className="gradegoals-loading">
-      <div className="gradegoals-spinner"></div>
+    <div className="goals-loading">
+      <div className="goals-spinner"></div>
       <p>Loading your goals...</p>
     </div>
   );
