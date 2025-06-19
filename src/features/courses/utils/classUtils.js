@@ -68,6 +68,7 @@ export function transformClasses(classes, courses) {
       until: untilTime,
       room: cls.location || 'TBD',
       type: cls.classType,
+      title: courseInfo.title,
       code: courseInfo.code,
       section: 'A',
       professor: courseInfo.professor,
