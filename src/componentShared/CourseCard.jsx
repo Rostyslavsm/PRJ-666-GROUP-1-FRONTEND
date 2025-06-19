@@ -150,7 +150,6 @@ const CourseCard = ({
 
       {course.schedule && course.schedule.length > 0 && (
         <>
-          <h4 className={styles.scheduleHeading}>Schedule</h4>
           <div className={styles.schedule}>
             {course.schedule.map((s, i) => (
               <div key={i} className={styles.scheduleItem}>
