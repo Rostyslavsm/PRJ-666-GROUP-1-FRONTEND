@@ -2,11 +2,7 @@ import React from 'react';
 import { useGoals } from '@/features/goals/hooks/useGoals';
 import { useGoalForm } from '@/features/goals/hooks/useGoalForm';
 import { createGoal, updateGoal, deleteGoal } from '@/features/goals/services/goalService';
-import {
-  getAvailableCourses,
-  getCourseById,
-  validateGoalForm,
-} from '@/features/goals/utils/goalUtils';
+import { getAvailableCourses, validateGoalForm } from '@/features/goals/utils/goalUtils';
 import GoalCard from '@/features/goals/components/GoalCard';
 import GoalForm from '@/features/goals/components/GoalForm';
 import EmptyState from '@/features/goals/components/EmptyState';
@@ -40,8 +36,8 @@ const GoalsPage = () => {
     setIsSubmitting(true);
 
     const errors = validateGoalForm(formData, editingId);
-    setFormErrors(errors);
     if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
       setIsSubmitting(false);
       return;
     }
@@ -49,39 +45,58 @@ const GoalsPage = () => {
     try {
       if (editingId) {
         const updatedGoal = await updateGoal(editingId, parseFloat(formData.targetGrade));
-        setGoals((prev) => prev.map((goal) => (goal._id === editingId ? updatedGoal : goal)));
+        setGoals((prev) =>
+          prev.map((goal) =>
+            goal._id === editingId
+              ? { ...updatedGoal, course: goal.course || {} } // Preserve existing course with fallback
+              : goal
+          )
+        );
       } else {
         const newGoal = await createGoal({
           courseId: formData.courseId,
           targetGrade: parseFloat(formData.targetGrade),
         });
-        setGoals((prev) => [...prev, newGoal]);
+
+        // Check if API already returned course data
+        const hasCourseData = newGoal.course && newGoal.course._id;
+
+        setGoals((prev) => [
+          ...prev,
+          hasCourseData
+            ? newGoal
+            : {
+                ...newGoal,
+                course: courses.find((c) => c._id === formData.courseId) || {},
+              },
+        ]);
       }
       resetForm();
     } catch (err) {
       console.error('Failed to save goal:', err);
-      setFormErrors({
-        submit: err.message || 'Failed to save goal',
-      });
+      setFormErrors({ submit: err.message || 'Failed to save goal' });
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleEdit = (goal) => {
-    const course = getCourseById(courses, goal.courseId);
+    // Since goal.course already contains the full course object, use it directly
+    const course = goal.course;
+
     if (!course) {
-      console.error('Course not found for goal:', goal);
+      console.error('Course not found in goal:', goal);
       return;
     }
 
     setEditingId(goal._id);
     setEditingCourse(course);
     setFormData({
-      courseId: goal.courseId._id || goal.courseId,
+      courseId: course._id, // Use course._id directly
       targetGrade: goal.targetGrade.toString(),
     });
     setShowForm(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleDelete = async (id) => {
@@ -98,9 +113,6 @@ const GoalsPage = () => {
       if (!result.success) {
         throw new Error(result.error || 'Failed to delete goal on server');
       }
-
-      // Refresh to ensure full consistency
-      await refreshGoals();
     } catch (err) {
       // Revert on error
       setGoals(originalGoals);
@@ -175,17 +187,18 @@ const GoalsPage = () => {
       ) : (
         <div className="goals-grid">
           {goals.map((goal) => {
-            const course = getCourseById(courses, goal.courseId);
-            if (!course) {
-              console.warn('Missing course for goal:', goal);
+            // Use goal.course directly instead of getCourseById
+            const course = goal.course || {};
+            if (!course._id) {
+              // Check for minimal required data
+              console.warn('Incomplete course data for goal:', goal._id);
               return null;
             }
 
             return (
               <GoalCard
                 key={goal._id}
-                goal={goal}
-                course={course}
+                goal={goal} // Now contains course data
                 onEdit={() => handleEdit(goal)}
                 onDelete={() => handleDelete(goal._id)}
                 disabled={operationLoading}

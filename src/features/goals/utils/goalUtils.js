@@ -4,19 +4,37 @@ export const getAvailableCourses = (courses, goals) => {
   return courses.filter((course) => !coursesWithGoals.includes(course._id));
 };
 
-export const getCourseById = (courses, courseId) => {
-  if (typeof courseId === 'object') {
-    return courseId; // Already expanded course object
+// src/features/goals/utils/goalUtils.js
+export const getCourseById = (courses, courseIdOrObject) => {
+  // If courseIdOrObject is a full course object, return it directly
+  if (typeof courseIdOrObject === 'object' && courseIdOrObject !== null) {
+    return courseIdOrObject;
   }
-  return courses.find((course) => course._id === courseId);
-};
 
-export const calculateProgress = (currentGrade, targetGrade) => {
+  // Otherwise, treat it as a string ID and find in courses array
+  return courses.find((course) => course._id === courseIdOrObject);
+};
+export const calculateProgress = (currentGrade, targetGrade, totalWeightSoFar, weightRemaining) => {
+  // Handle edge cases
   if (currentGrade >= targetGrade) return 100;
-  return Math.round((currentGrade / targetGrade) * 100);
+  if (totalWeightSoFar <= 0) return 0;
+  if (currentGrade === 0) return 0; // ⬅️ added safety check
+  if (weightRemaining <= 0) return Math.round((currentGrade / targetGrade) * 100);
+
+  const currentContribution = (currentGrade * totalWeightSoFar) / 100;
+  const neededFromRemaining = targetGrade - currentContribution;
+  const requiredRemainingGrade = (neededFromRemaining * 100) / weightRemaining;
+
+  // Prevent division by zero
+  if (requiredRemainingGrade === 0) return 100;
+
+  const progress = (currentGrade / requiredRemainingGrade) * 100;
+  return Math.min(Math.round(progress), 100);
 };
 
 export const getProgressColor = (progress) => {
+  console.log('progress is ', progress);
+  if (progress === 0) return '#000000';
   if (progress >= 90) return '#10B981'; // Green
   if (progress >= 70) return '#FBBF24'; // Yellow
   if (progress >= 50) return '#F97316'; // Orange
