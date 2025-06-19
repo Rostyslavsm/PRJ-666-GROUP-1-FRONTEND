@@ -49,7 +49,7 @@ function EventCardAdapter({
     });
   };
 
-  const handleGradeInputClick = (e) => {
+  const handleGradeButtonClick = (e) => {
     e.stopPropagation();
     setIsEditingGrade(true);
   };
@@ -100,7 +100,7 @@ function EventCardAdapter({
     weight: task.weight,
     dueDate: task.dueDate,
     isCompleted: task.isCompleted,
-    grade: task.isCompleted ? task.grade : undefined, // Only show grade for completed events
+    grade: undefined, // We'll handle grade display ourselves
     // Format the schedule data
     schedule: [
       {
@@ -118,13 +118,30 @@ function EventCardAdapter({
     });
   }
 
-  // Custom actions for events (mark as done/grade)
+  // Custom actions for delete button
   const eventActions = (
     <>
+      {isDeletable && (
+        <DeleteButton
+          onClick={handleDeleteClick}
+          isLoading={isDeleting}
+          disabled={isUpdating || isDeleting}
+          title="Delete event"
+        />
+      )}
+    </>
+  );
+
+  // Event buttons that will be inserted between title and schedule
+  const eventButtons = (
+    <div className={styles['event-buttons-container']}>
       {isCompletable && (
         <button
           className={styles['event-action-button']}
-          onClick={onToggle}
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggle();
+          }}
           disabled={isUpdating || isDeleting}
         >
           {isUpdating ? (
@@ -137,25 +154,27 @@ function EventCardAdapter({
           )}
         </button>
       )}
+
       {isGradable && (
         <div className={styles['event-grade-container']}>
-          <label htmlFor={`grade-${courseData._id}`} className={styles['event-grade-label']}>
-            Grade:
-          </label>
           {isEditingGrade ? (
             <div className={styles['event-grade-edit-container']}>
-              <input
-                id={`grade-${courseData._id}`}
-                type="text"
-                min="0"
-                max="100"
-                value={gradeValue}
-                onClick={(e) => e.stopPropagation()}
-                onChange={handleGradeChange}
-                className={styles['event-grade-input']}
-                disabled={isUpdating || isDeleting || isSavingGrade}
-                autoFocus
-              />
+              <div className={styles['event-grade-input-row']}>
+                <input
+                  id={`grade-${courseData._id}`}
+                  type="text"
+                  min="0"
+                  max="100"
+                  value={gradeValue}
+                  onClick={(e) => e.stopPropagation()}
+                  onChange={handleGradeChange}
+                  className={styles['event-grade-input']}
+                  disabled={isUpdating || isDeleting || isSavingGrade}
+                  autoFocus
+                  placeholder="0-100"
+                />
+                <span className={styles['percent-sign']}>%</span>
+              </div>
 
               {error && <div className={styles['event-grade-error']}>{error}</div>}
 
@@ -186,28 +205,24 @@ function EventCardAdapter({
               </div>
             </div>
           ) : (
-            <div className={styles['event-grade-display']} onClick={handleGradeInputClick}>
-              {task.grade !== undefined && task.grade !== null ? `${task.grade}%` : 'Set Grade'}
-            </div>
+            <button
+              className={styles['event-action-button']}
+              onClick={handleGradeButtonClick}
+              disabled={isUpdating || isDeleting}
+            >
+              {task.grade !== undefined && task.grade !== null
+                ? `Grade: ${task.grade}%`
+                : 'Set Grade'}
+            </button>
           )}
         </div>
       )}
-      {isDeletable && (
-        <div className={styles['event-actions-right']}>
-          <DeleteButton
-            onClick={handleDeleteClick}
-            isLoading={isDeleting}
-            disabled={isUpdating || isDeleting}
-            title="Delete event"
-          />
-        </div>
-      )}
-    </>
+    </div>
   );
 
   return (
     <>
-      <CourseCard course={courseData} actions={eventActions} />
+      <CourseCard course={courseData} actions={eventActions} eventButtons={eventButtons} />
 
       {/* Confirmation Modal */}
       <ConfirmationModal

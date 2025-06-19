@@ -22,6 +22,7 @@ import styles from '../styles/CourseCard.module.css';
  * @param {Object} customStyles - Additional custom styles
  * @param {Array} actions - Custom action buttons to render instead of defaults
  * @param {Function} onCardClick - Handler for clicking the entire card
+ * @param {React.ReactNode} eventButtons - Custom buttons to display between title and schedule
  */
 const CourseCard = ({
   course,
@@ -31,6 +32,7 @@ const CourseCard = ({
   customStyles = {},
   actions = null,
   onCardClick = null,
+  eventButtons = null,
 }) => {
   if (!course) return null;
 
@@ -87,6 +89,8 @@ const CourseCard = ({
           {course.code}
         </div>
       </div>
+
+      {eventButtons && <div className={styles.eventButtonsRow}>{eventButtons}</div>}
 
       <div className={styles.metadata}>
         {course.professor && (

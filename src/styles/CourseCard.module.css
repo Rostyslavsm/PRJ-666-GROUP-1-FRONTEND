@@ -54,6 +54,15 @@
   font-weight: 500;
 }
 
+/* Event buttons row */
+.eventButtonsRow {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0.25rem 0 0.5rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
 /* Course metadata */
 .metadata {
   display: flex;
