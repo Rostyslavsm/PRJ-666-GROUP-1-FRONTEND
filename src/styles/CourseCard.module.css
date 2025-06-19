@@ -41,7 +41,7 @@
   overflow-wrap: break-word;
   word-wrap: break-word;
   hyphens: auto;
-  max-width: 70%;
+  max-width: 100%;
 }
 
 /* Course code badge */
