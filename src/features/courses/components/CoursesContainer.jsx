@@ -207,7 +207,11 @@ export default function CoursesContainer() {
       }),
     };
 
-    setEditData({ ...formattedCourse, _id: course._id });
+    setEditData({
+      ...formattedCourse,
+      _id: course._id,
+      currentGrade: course.currentGrade,
+    });
     setShowForm(true);
   };
 
@@ -235,6 +239,8 @@ export default function CoursesContainer() {
         startDate: data.startDate,
         endDate: data.endDate,
         color: data.color,
+        // Preserve the currentGrade if it exists in editData
+        ...(editData?.currentGrade && { currentGrade: editData.currentGrade }),
         instructor: {
           name: data.instructor.name,
           email: data.instructor.email,
@@ -277,7 +283,11 @@ export default function CoursesContainer() {
             section: result.course?.section || courseData.section,
             professor: result.course?.instructor?.name || courseData.instructor.name,
             color: result.course?.color || courseData.color,
-            grade: 0,
+            currentGrade: result.course?.currentGrade || {
+              avg: 0,
+              totalWeightSoFar: 0,
+              weightRemaining: 100,
+            },
             schedule: (result.course?.schedule || courseData.schedule).map((s) => ({
               time:
                 typeof s.startTime === 'number'

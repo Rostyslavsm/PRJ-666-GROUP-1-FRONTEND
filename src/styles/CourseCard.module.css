@@ -124,7 +124,24 @@
   padding: 0.5rem;
   background-color: rgba(var(--schedule-item-color, 82, 121, 111), 0.15);
   border-radius: 0.375rem;
-  display: inline-block;
+  display: flex;
+  flex-direction: column;
+}
+
+.gradeRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.gradeScore {
+  font-weight: 600;
+}
+
+.gradeDetails {
+  margin-top: 4px;
+  font-size: 0.875rem;
+  color: #666;
 }
 
 /* Action buttons container */

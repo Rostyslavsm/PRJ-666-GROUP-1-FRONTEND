@@ -62,7 +62,7 @@ export function useCourses() {
           endTime: secondsToTime(slot.endTime),
         })),
         color: course.color || '#cad2c5',
-        grade: 0,
+        currentGrade: course.currentGrade || { avg: 0, totalWeightSoFar: 0, weightRemaining: 100 },
         startDate: course.startDate,
         endDate: course.endDate,
         schedule: course.schedule.map((s) => ({
@@ -143,7 +143,7 @@ export function useCourses() {
           endTime: secondsToTime(slot.endTime),
         })),
         color: course.color || '#cad2c5',
-        grade: 0,
+        currentGrade: course.currentGrade || { avg: 0, totalWeightSoFar: 0, weightRemaining: 100 },
         startDate: course.startDate,
         endDate: course.endDate,
         schedule: course.schedule.map((s) => ({
@@ -229,7 +229,7 @@ export function useCourses() {
           endTime: secondsToTime(slot.endTime),
         })),
         color: course.color || '#cad2c5',
-        grade: 0,
+        currentGrade: course.currentGrade || { avg: 0, totalWeightSoFar: 0, weightRemaining: 100 },
         startDate: course.startDate,
         endDate: course.endDate,
         schedule: course.schedule.map((s) => ({

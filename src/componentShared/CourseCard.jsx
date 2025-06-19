@@ -13,7 +13,7 @@ import styles from '../styles/CourseCard.module.css';
  * @param {string} course.professor - Course professor
  * @param {string} course.color - Course color (hex)
  * @param {Array} course.schedule - Course schedule array
- * @param {number|string} course.grade - Course grade
+ * @param {Object|number|string} course.currentGrade - Course grade object or direct value
  * @param {string} course.room - Room location (for sessions)
  * @param {string} course.section - Section identifier
  * @param {Function} onEdit - Edit handler
@@ -41,6 +41,42 @@ const CourseCard = ({
 
   const handleCardClick = () => {
     if (onCardClick) onCardClick(course);
+  };
+
+  // Handle both legacy and new grade format
+  const renderGrade = () => {
+    if (course.currentGrade === undefined && course.grade === undefined) {
+      return null;
+    }
+
+    // If we have the new format with currentGrade object
+    if (course.currentGrade && typeof course.currentGrade === 'object') {
+      return (
+        <div className={styles.grade}>
+          <div className={styles.gradeRow}>
+            <span className={styles.label}>Current grade:</span>
+            <span className={styles.gradeScore}>{course.currentGrade.avg}%</span>
+          </div>
+          <div className={styles.gradeDetails}>
+            <small>
+              ({course.currentGrade.totalWeightSoFar}% of course completed,{' '}
+              {course.currentGrade.weightRemaining}% remaining)
+            </small>
+          </div>
+        </div>
+      );
+    }
+
+    // Fall back to the old format
+    const gradeValue = course.currentGrade || course.grade;
+    return (
+      <div className={styles.grade}>
+        <div className={styles.gradeRow}>
+          <span className={styles.label}>Current grade:</span>
+          <span className={styles.gradeScore}>{gradeValue}</span>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -124,11 +160,7 @@ const CourseCard = ({
         </>
       )}
 
-      {course.grade !== undefined && (
-        <div className={styles.grade}>
-          <span className={styles.label}>Current grade:</span> {course.grade}
-        </div>
-      )}
+      {renderGrade()}
     </div>
   );
 };
