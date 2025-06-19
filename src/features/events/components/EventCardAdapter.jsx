@@ -211,7 +211,7 @@ function EventCardAdapter({
               disabled={isUpdating || isDeleting}
             >
               {task.grade !== undefined && task.grade !== null
-                ? `Grade: ${task.grade}%`
+                ? `Grade: ${Math.round(task.grade)}%`
                 : 'Set Grade'}
             </button>
           )}

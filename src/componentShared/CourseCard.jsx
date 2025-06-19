@@ -55,12 +55,12 @@ const CourseCard = ({
         <div className={styles.grade}>
           <div className={styles.gradeRow}>
             <span className={styles.label}>Current grade:</span>
-            <span className={styles.gradeScore}>{course.currentGrade.avg}%</span>
+            <span className={styles.gradeScore}>{Math.round(course.currentGrade.avg)}%</span>
           </div>
           <div className={styles.gradeDetails}>
             <small>
-              ({course.currentGrade.totalWeightSoFar}% of course completed,{' '}
-              {course.currentGrade.weightRemaining}% remaining)
+              ({Math.round(course.currentGrade.totalWeightSoFar)}% of course completed,{' '}
+              {Math.round(course.currentGrade.weightRemaining)}% remaining)
             </small>
           </div>
         </div>
@@ -69,11 +69,13 @@ const CourseCard = ({
 
     // Fall back to the old format
     const gradeValue = course.currentGrade || course.grade;
+    // Ensure the grade is displayed as an integer
+    const formattedGrade = typeof gradeValue === 'number' ? Math.round(gradeValue) : gradeValue;
     return (
       <div className={styles.grade}>
         <div className={styles.gradeRow}>
           <span className={styles.label}>Current grade:</span>
-          <span className={styles.gradeScore}>{gradeValue}</span>
+          <span className={styles.gradeScore}>{formattedGrade}</span>
         </div>
       </div>
     );
