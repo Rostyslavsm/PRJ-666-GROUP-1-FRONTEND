@@ -134,7 +134,6 @@ function EventPending({ groups, onGroupsUpdate }) {
                     <EventCardAdapter
                       task={task}
                       onToggle={() => markDone(task)}
-                      onSetGrade={null}
                       onDelete={deleteEvent}
                       isUpdating={updatingEventId === taskId}
                       isDeleting={deletingEventId === taskId}

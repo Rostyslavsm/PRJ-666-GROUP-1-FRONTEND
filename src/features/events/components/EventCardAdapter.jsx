@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import CourseCard from '../../../componentShared/CourseCard';
 import ConfirmationModal from '../../../componentShared/ConfirmationModal';
 import { useConfirmation } from '../../../componentShared/useConfirmation';
 import { LoadingAnimation } from '../../animations';
+import DeleteButton from '../../../componentShared/DeleteButton';
 import styles from '../../../styles/EventCardAdapter.module.css';
 
 /**
@@ -15,7 +16,12 @@ function EventCardAdapter({
   onDelete,
   isUpdating = false,
   isDeleting = false,
+  isSavingGrade = false,
 }) {
+  const [isEditingGrade, setIsEditingGrade] = useState(false);
+  const [gradeValue, setGradeValue] = useState(task.grade || '');
+  const [error, setError] = useState('');
+
   const { isConfirmationOpen, confirmationData, openConfirmation, closeConfirmation } =
     useConfirmation();
 
@@ -43,6 +49,46 @@ function EventCardAdapter({
     });
   };
 
+  const handleGradeInputClick = (e) => {
+    e.stopPropagation();
+    setIsEditingGrade(true);
+  };
+
+  const handleGradeChange = (e) => {
+    setGradeValue(e.target.value);
+    setError('');
+  };
+
+  const handleGradeSave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const value = gradeValue.trim();
+
+    if (!/^\d+$/.test(value)) {
+      setError('Enter a whole number');
+      return;
+    }
+
+    const number = parseInt(value, 10);
+    if (number < 0 || number > 100) {
+      setError('Must be between 0 and 100');
+      return;
+    }
+
+    setError('');
+    onSetGrade(task.id || task._id, number);
+    setIsEditingGrade(false);
+  };
+
+  const handleGradeCancel = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsEditingGrade(false);
+    setGradeValue(task.grade || '');
+    setError('');
+  };
+
   // Convert task to course format expected by CourseCard
   const courseData = {
     _id: task.id || task._id,
@@ -54,7 +100,7 @@ function EventCardAdapter({
     weight: task.weight,
     dueDate: task.dueDate,
     isCompleted: task.isCompleted,
-    grade: task.grade,
+    grade: task.isCompleted ? task.grade : undefined, // Only show grade for completed events
     // Format the schedule data
     schedule: [
       {
@@ -96,16 +142,63 @@ function EventCardAdapter({
           <label htmlFor={`grade-${courseData._id}`} className={styles['event-grade-label']}>
             Grade:
           </label>
-          <input
-            id={`grade-${courseData._id}`}
-            type="number"
-            min="0"
-            max="100"
-            value={courseData.grade || ''}
-            onClick={(e) => e.stopPropagation()}
-            onChange={(e) => onSetGrade(courseData._id, e.target.value)}
-            className={styles['event-grade-input']}
+          {isEditingGrade ? (
+            <div className={styles['event-grade-edit-container']}>
+              <input
+                id={`grade-${courseData._id}`}
+                type="text"
+                min="0"
+                max="100"
+                value={gradeValue}
+                onClick={(e) => e.stopPropagation()}
+                onChange={handleGradeChange}
+                className={styles['event-grade-input']}
+                disabled={isUpdating || isDeleting || isSavingGrade}
+                autoFocus
+              />
+
+              {error && <div className={styles['event-grade-error']}>{error}</div>}
+
+              <div className={styles['event-grade-actions']}>
+                <button
+                  type="button"
+                  onClick={handleGradeSave}
+                  className={styles['event-grade-button']}
+                  disabled={isUpdating || isDeleting || isSavingGrade}
+                >
+                  {isSavingGrade ? (
+                    <div className={styles['button-loading']}>
+                      <LoadingAnimation size="small" style={{ width: 16, height: 16 }} />
+                      <span>Saving</span>
+                    </div>
+                  ) : (
+                    'Save'
+                  )}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleGradeCancel}
+                  className={`${styles['event-grade-button']} ${styles['event-grade-cancel']}`}
+                  disabled={isUpdating || isDeleting || isSavingGrade}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className={styles['event-grade-display']} onClick={handleGradeInputClick}>
+              {task.grade !== undefined && task.grade !== null ? `${task.grade}%` : 'Set Grade'}
+            </div>
+          )}
+        </div>
+      )}
+      {isDeletable && (
+        <div className={styles['event-actions-right']}>
+          <DeleteButton
+            onClick={handleDeleteClick}
+            isLoading={isDeleting}
             disabled={isUpdating || isDeleting}
+            title="Delete event"
           />
         </div>
       )}
@@ -114,35 +207,7 @@ function EventCardAdapter({
 
   return (
     <>
-      <CourseCard
-        course={courseData}
-        onDelete={handleDeleteClick}
-        isDeleting={isDeleting}
-        actions={
-          <>
-            {eventActions}
-            {isDeletable && !isGradable && !isCompletable && (
-              <div className={styles['event-actions-right']}>
-                <button
-                  className={styles['event-delete-button']}
-                  onClick={handleDeleteClick}
-                  disabled={isUpdating || isDeleting}
-                  title="Delete event"
-                >
-                  {isDeleting ? (
-                    <LoadingAnimation size="small" style={{ width: 24, height: 24 }} />
-                  ) : (
-                    'Delete'
-                  )}
-                </button>
-              </div>
-            )}
-          </>
-        }
-        customStyles={{
-          backgroundColor: task.isCompleted ? '#e8f5e9' : '#fff',
-        }}
-      />
+      <CourseCard course={courseData} actions={eventActions} />
 
       {/* Confirmation Modal */}
       <ConfirmationModal

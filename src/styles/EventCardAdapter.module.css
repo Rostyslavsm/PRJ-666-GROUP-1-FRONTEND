@@ -40,6 +40,7 @@
   align-items: center;
   gap: 8px;
   padding: 0 8px;
+  flex-wrap: wrap;
 }
 
 .event-grade-label {
@@ -57,31 +58,68 @@
   text-align: center;
 }
 
-.event-actions-right {
-  margin-left: auto;
+.event-grade-edit-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
-.event-delete-button {
-  background-color: var(--color-destructive, #a72f38);
+.event-grade-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.event-grade-button {
+  background-color: var(--color-secondary, #52796f);
   color: white;
   border: none;
   border-radius: 4px;
-  padding: 6px 12px;
+  padding: 4px 12px;
   font-size: 0.85rem;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  flex: 1;
 }
 
-.event-delete-button:hover {
-  background-color: #8a2730;
-  transform: translateY(-2px);
+.event-grade-button:hover {
+  background-color: #3a5a40;
 }
 
-.event-delete-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-  transform: none;
+.event-grade-cancel {
+  background-color: #6c757d;
+}
+
+.event-grade-cancel:hover {
+  background-color: #5a6268;
+}
+
+.event-grade-display {
+  background-color: #f0f0f0;
+  border: 1px dashed #ccc;
+  border-radius: 4px;
+  padding: 4px 10px;
+  min-width: 60px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.event-grade-display:hover {
+  background-color: #e5e5e5;
+  border-color: #aaa;
+}
+
+.event-grade-error {
+  color: #d9534f;
+  font-size: 0.8rem;
+  margin-top: -4px;
+  font-weight: 500;
+}
+
+.event-actions-right {
+  margin-left: auto;
 }
 
 /* Pending and completed event card backgrounds */
@@ -90,5 +128,5 @@
 }
 
 .event-completed {
-  background-color: #e8f5e9;
+  background-color: #f5eee8;
 }
