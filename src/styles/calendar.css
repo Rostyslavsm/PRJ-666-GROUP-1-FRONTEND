@@ -217,6 +217,7 @@
     background-color 0.3s,
     color 0.3s;
   font-size: 0.875rem;
+  margin-right: 0.5rem;
 }
 
 .view-toggle-button.active {
