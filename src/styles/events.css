@@ -23,111 +23,6 @@
   padding: 1.5rem;
 }
 
-.events-task-card,
-.event-card {
-  border-radius: 12px;
-  padding: 1.25rem;
-  margin-bottom: 16px;
-  transition: all 0.2s ease;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.events-task-card:hover,
-.event-card:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transform: translateY(-7px);
-}
-
-/* Color indicator for event cards */
-.events-task-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 5px;
-  background-color: var(--event-color, #52796f);
-}
-
-.events-task-title {
-  margin: 0 0 1rem 0;
-  color: #2c3e50;
-  font-size: clamp(1.1rem, 1.5vw, 1.25rem);
-  font-weight: 600;
-  line-height: 1.3;
-}
-
-.events-task-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
-}
-
-.events-course-code {
-  font-weight: 700;
-  color: #52796f;
-  letter-spacing: -0.5px;
-}
-
-.events-task-type {
-  color: #fff;
-  font-size: 0.85rem;
-  background: var(--event-color, #52796f);
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-}
-
-.events-task-description {
-  font-size: 0.95rem;
-  color: #555;
-  line-height: 1.5;
-  margin: 0.5rem 0 1rem;
-  flex-grow: 1;
-}
-
-.events-topics-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  padding: 0;
-  margin: 1rem 0 0;
-}
-
-.events-topics-list li {
-  background: #f4f4f4;
-  padding: 0.35rem 0.9rem;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  color: #555;
-  line-height: 1.4;
-}
-
-.events-complete-btn,
-.add-event-button {
-  background-color: #52796f;
-  color: #cad2c5;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
-
-.events-complete-btn:hover,
-.add-event-button:hover {
-  background-color: #3a5a40;
-}
-
-.events-complete-btn.completed {
-  background: #3a5a40;
-}
-
 /* Small screens: 1 column */
 @media (max-width: 768px) {
   .events-tasks-grid {
@@ -166,21 +61,20 @@
   padding-top: 0;
 }
 
-/* Add Event Button */
-.add-event-row {
+/* Add Course Button */
+.add-course-row {
   display: flex;
   justify-content: center;
   margin: 0 0 1rem;
   width: 100%;
 }
 
-.add-event-button {
+.add-course-button {
   padding: 0.75rem 1.25rem;
   width: 100%;
-  max-width: 300px;
 }
 
-/* Practice Tabs Styles */
+/* Tabs Container */
 .events-tabs-container {
   display: flex;
   flex-direction: column;
@@ -192,363 +86,66 @@
   animation: slideInFromBottom 0.7s ease-out;
 }
 
-/* Tab styles moved to tabs.css */
-
 .events-tab-content {
   margin-top: 1.5rem;
   font-size: 1rem;
   width: 100%;
 }
 
-.events-icon-bar {
-  position: fixed;
-  bottom: 80px;
-  right: 10px;
-  display: flex;
-  gap: 1rem;
-  padding: 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 12px;
-  background: #f9f9f9;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-}
-
-.events-icon-bar button {
-  background: #52796f;
-  color: #cad2c5;
-  border: none;
-  border-radius: 8px;
-  padding: 0.4rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.events-icon-bar button:hover {
-  background: #3a5a40;
-}
-
-.events-close-button {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #2f3e46;
-}
-
-/* Remove redundant form styles that are now handled by modal.css */
-.events-form-group,
-.events-form-group label,
-.events-form-group input,
-.events-form-group select,
-.events-form-group textarea,
-.events-submit-button {
-  /* These styles are now handled by modal.css */
-  display: none;
-}
-
-/* Update event form styles to match our modal styles */
-.event-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  /* Remove background color as it's handled by modal.css */
-}
-
-/* Specific styles for complete button */
-.events-complete-btn {
-  width: 100%;
-  padding: 0.75rem;
-  margin-top: auto;
-}
-
+/* Pagination styles */
 .events-pagination-container {
   display: flex;
   justify-content: center;
-  align-items: center;
-  gap: 8px;
-  margin: 2rem 0;
-  padding: 0;
+  margin: 1rem 0;
+  padding: 0.5rem;
   list-style: none;
 }
 
 .events-pagination-item {
-  margin: 0 4px;
-  border-radius: 6px;
-  transition: all 0.2s ease;
+  display: inline-block;
+  margin: 0 2px;
 }
 
 .events-pagination-link {
-  display: block;
-  padding: 8px 14px;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  color: #333;
   background: #fff;
-  color: #52796f;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s;
+  display: inline-block;
+  text-align: center;
+  font-size: 0.9rem;
 }
 
 .events-pagination-link:hover {
-  background: #f8f9fa;
-  transform: translateY(-1px);
+  background: #f5f5f5;
+  border-color: #ccc;
 }
 
 .events-active-page .events-pagination-link {
   background: #52796f;
-  color: #cad2c5;
+  color: #fff;
   border-color: #52796f;
-  box-shadow: 0 2px 6px rgba(250, 250, 250, 0.2);
 }
 
 .events-pagination-nav {
-  display: flex;
-  align-items: center;
+  display: inline-block;
 }
 
 .events-pagination-arrow {
-  font-size: 1.2rem;
-  line-height: 1;
-  padding: 8px 12px;
-  color: #cad2c5;
-}
-
-.events-disabled-nav .events-pagination-arrow {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* Loading indicator */
-.loading-indicator {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100px;
-  color: #666;
-  font-size: 0.9rem;
-}
-
-/* Icon animation */
-.icon-spin {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-/* Specific styles for task cards */
-.events-task-card {
-  opacity: 0.85;
-  background: #f8f8f8;
-  border: 1px solid #e0e0e0;
-  min-height: 220px;
-}
-
-/* Specific styles for event cards */
-.event-card {
-  background-color: #fff3cd;
-  color: #212529;
-  border-left: 5px solid var(--event-color, #52796f);
-}
-
-/* Removed event-pending border-left override */
-
-.event-title-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.event-title {
-  margin: 0;
-  font-size: 1.1rem;
-  font-weight: 600;
+  padding: 8px 10px;
+  cursor: pointer;
   color: #333;
 }
 
-.event-type-badge {
-  background-color: var(--event-color, #52796f);
-  color: white;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  text-transform: capitalize;
-}
-
-.event-metadata {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 12px;
-  font-size: 0.9rem;
-  color: #666;
-}
-
-.event-label {
-  font-weight: 500;
-  color: #444;
-}
-
-.event-description {
-  margin-bottom: 12px;
-  font-size: 0.9rem;
-  color: #555;
-}
-
-.event-description p {
-  margin: 0;
-}
-
-.event-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  margin-top: 12px;
-}
-
-.event-action-button {
-  background-color: #52796f;
-  color: #cad2c5;
-  border: none;
-  border-radius: 4px;
-  padding: 6px 12px;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.event-action-button:hover {
-  background-color: #3a5a40;
-}
-
-.event-grade-container {
-  display: flex;
-  align-items: center;
-}
-
-.event-grade-label {
-  margin-right: 8px;
-  font-size: 0.9rem;
-}
-
-.event-grade-input {
-  width: 60px;
-  padding: 4px 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 0.9rem;
-}
-
-/* Event Grade Form */
-.event-grade-form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 12px;
-}
-
-.event-grade-field {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.event-grade-error {
-  color: #e74c3c;
-  font-size: 0.8rem;
-  margin-top: -8px;
-}
-
-.event-grade-actions {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-}
-
-.event-action-secondary {
-  background-color: #2f3e46;
-}
-
-.event-action-secondary:hover {
-  background-color: #1a2b32;
-}
-
-/* Grade Display */
-.event-grade-display {
-  margin: 8px 0;
-  padding: 8px;
-  background-color: #f8f8f8;
-  border-radius: 4px;
-  font-size: 0.9rem;
-}
-
-.event-action-button:disabled {
-  opacity: 0.6;
+.events-disabled-nav .events-pagination-arrow {
+  color: #ccc;
   cursor: not-allowed;
 }
 
-/* Button loading styles */
-.button-loading {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.button-loading span {
-  margin-left: 4px;
-}
-
-/* Update event delete button to properly display loading animation */
-.event-delete-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #f44336;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 8px;
-  margin-left: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  width: 36px;
-  height: 36px;
-  overflow: hidden;
-}
-
-.event-delete-button:hover {
-  background-color: #d32f2f;
-}
-
-.event-delete-button:disabled {
-  background-color: #ffcdd2;
-  cursor: not-allowed;
-}
-
-/* Color picker specific styles */
-.color-picker {
-  height: 40px;
-  padding: 0.25rem;
-  cursor: pointer;
-}
-
-/* Error message styles */
-.error-message {
-  color: #a72f38;
-  font-size: 0.875rem;
-  margin-top: 0.25rem;
-}
-
-/* Loading styles for events page */
+/* Events loading and refreshing states */
 .events-loading {
   display: flex;
   flex-direction: column;
@@ -572,15 +169,39 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 5rem 1rem;
   width: 100%;
+  padding: 3rem;
   text-align: center;
-  min-height: 400px;
+  opacity: 0.6;
+  min-height: 300px;
 }
 
 .events-refreshing-text {
-  margin-top: 2rem;
-  font-size: 1.25rem;
+  margin-top: 1rem;
+  font-size: 1rem;
   color: #2f3e46;
-  font-weight: 500;
+}
+
+/* Debug styles - only visible in development */
+.debug-info {
+  font-size: 10px;
+  color: #999;
+  margin-top: -12px;
+  margin-bottom: 8px;
+}
+
+/* Empty state styling */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  text-align: center;
+}
+
+.empty-state-message {
+  font-size: 1.1rem;
+  color: #2f3e46;
+  margin-bottom: 1.5rem;
 }

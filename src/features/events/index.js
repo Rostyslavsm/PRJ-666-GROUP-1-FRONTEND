@@ -13,12 +13,10 @@ export {
 
 // Export components
 export { default as EventForm } from './components/EventForm';
-export { default as EventCard } from './components/EventCard';
 export { default as EventPending } from './components/EventPending';
 export { default as EventCompleted } from './components/EventCompleted';
 export { default as EventsLoading } from './components/EventsLoading';
 export { default as EventsError } from './components/EventsError';
-export { default as EventGradeInput } from './components/EventGradeInput';
 
 // Export hooks
 export { useEventDelete } from './hooks/useEventDelete';

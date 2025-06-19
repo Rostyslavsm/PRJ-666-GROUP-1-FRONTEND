@@ -1,7 +1,7 @@
 import React from 'react';
-import { LoadingAnimation } from '../../animations';
 import ConfirmationModal from '../../../componentShared/ConfirmationModal';
 import { useConfirmation } from '../../../componentShared/useConfirmation';
+import CourseCard from '../../../componentShared/CourseCard';
 
 export default function ClassesList({ schedule, handleDeleteClass, isDeletingClass }) {
   const { isConfirmationOpen, confirmationData, openConfirmation, closeConfirmation } =
@@ -31,46 +31,39 @@ export default function ClassesList({ schedule, handleDeleteClass, isDeletingCla
         <div key={date} className="class-group">
           <h4 className="class-group-title">{date}</h4>
           <div className="session-container">
-            {sessions.map((s, idx) => (
-              <div key={`${s.code}-${idx}`} className="session-card">
-                <div className="session-actions">
-                  <button
-                    className="delete-class-button"
-                    onClick={() => handleDeleteClick(s.id, s)}
-                    disabled={isDeletingClass}
-                  >
-                    {isDeletingClass ? (
-                      <LoadingAnimation size="small" style={{ width: 24, height: 24 }} />
-                    ) : (
-                      '×'
-                    )}
-                  </button>
-                </div>
-                <h5 className="session-title">{s.title || s.code}</h5>
-                <div className="session-meta">
-                  <div className="session-time">
-                    <strong>Time:</strong> {s.from} - {s.until}
-                  </div>
-                  <div className="session-type">
-                    <span className="session-type-badge">{s.type}</span>
-                  </div>
-                </div>
-                <div className="session-details">
-                  <div>
-                    <strong>Room:</strong> {s.room}
-                  </div>
-                  <div>
-                    <strong>Code:</strong> {s.code}
-                  </div>
-                  <div>
-                    <strong>Section:</strong> {s.section}
-                  </div>
-                  <div>
-                    <strong>Professor:</strong> {s.professor}
-                  </div>
-                </div>
-              </div>
-            ))}
+            {sessions.map((session, idx) => {
+              // Convert session data to course-like structure for CourseCard
+              const courseData = {
+                _id: session.id,
+                title: session.title || session.code,
+                code: session.code,
+                color: session.color,
+                professor: session.professor,
+                section: session.section,
+                schedule: [
+                  {
+                    weekDay: session.type || 'Class',
+                    time: `${session.from} - ${session.until}`,
+                  },
+                ],
+                // Additional custom data for sessions
+                room: session.room,
+              };
+
+              return (
+                <CourseCard
+                  key={`${session.code}-${idx}`}
+                  course={courseData}
+                  onDelete={(course) => handleDeleteClick(course._id, course)}
+                  isDeleting={isDeletingClass}
+                  customStyles={
+                    {
+                      // Optionally add any session-specific styling here
+                    }
+                  }
+                />
+              );
+            })}
           </div>
         </div>
       ))}

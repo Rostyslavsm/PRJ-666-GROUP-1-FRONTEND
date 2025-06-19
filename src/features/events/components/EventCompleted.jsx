@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import ReactPaginate from 'react-paginate';
-import EventCard from './EventCard';
-import EventGradeInput from './EventGradeInput';
+import EventCardAdapter from './EventCardAdapter';
 import { useEvents } from '..';
 
 function EventCompleted({ groups, onGroupsUpdate }) {
   const { toggleEventStatus, deleteEventById, fetchCompleted, setEventGrade } = useEvents();
-  const [editing, setEditing] = useState({ groupDate: null, taskId: null });
-  const [pageNumbers, setPageNumbers] = useState({});
   const [width, setWidth] = useState(window.innerWidth);
   const [updatingEventId, setUpdatingEventId] = useState(null);
   const [deletingEventId, setDeletingEventId] = useState(null);
   const [savingGradeId, setSavingGradeId] = useState(null);
+  const [pageNumbers, setPageNumbers] = useState({});
 
   useEffect(() => {
     const onResize = () => setWidth(window.innerWidth);
@@ -25,18 +23,7 @@ function EventCompleted({ groups, onGroupsUpdate }) {
     return 3;
   };
 
-  const startEditing = (groupDate, taskId) => {
-    setEditing({ groupDate, taskId });
-  };
-
-  const cancelEditing = () => {
-    setEditing({ groupDate: null, taskId: null });
-  };
-
   const markIncomplete = async (task) => {
-    // Debug the task to see what properties are available
-    console.log('Task being marked as incomplete:', task);
-
     // Extract the correct ID based on what's available
     const eventId = task._id || task.id;
 
@@ -44,8 +31,6 @@ function EventCompleted({ groups, onGroupsUpdate }) {
       console.error('Cannot mark as incomplete: Missing task ID', task);
       return;
     }
-
-    console.log('Using event ID for update:', eventId);
 
     setUpdatingEventId(eventId);
     try {
@@ -63,7 +48,6 @@ function EventCompleted({ groups, onGroupsUpdate }) {
       }
 
       await toggleEventStatus(eventId, false);
-      console.log('Event marked as incomplete, refreshing list');
       // Refresh the completed events list after updating
       await fetchCompleted();
     } catch (error) {
@@ -78,8 +62,6 @@ function EventCompleted({ groups, onGroupsUpdate }) {
       console.error('Cannot delete: Missing event ID');
       return;
     }
-
-    console.log('Deleting event with ID:', eventId);
 
     setDeletingEventId(eventId);
     try {
@@ -101,7 +83,6 @@ function EventCompleted({ groups, onGroupsUpdate }) {
         console.error('Failed to delete event');
         alert('Failed to delete event. Please try again.');
       } else {
-        console.log('Event deleted successfully, refreshing list');
         // Refresh the events list after deletion
         await fetchCompleted();
       }
@@ -113,56 +94,60 @@ function EventCompleted({ groups, onGroupsUpdate }) {
     }
   };
 
-  const saveGrade = async (grade) => {
-    const { groupDate, taskId } = editing;
-    if (!groupDate || !taskId) return;
+  const handleSaveGrade = async (eventId, grade) => {
+    if (!eventId) {
+      console.error('Cannot save grade: Missing event ID');
+      return false;
+    }
 
-    // Find the task in the groups
-    const group = groups.find((g) => g.date === groupDate);
-    if (!group) return cancelEditing();
-
-    const task = group.tasks.find((t) => t._id === taskId || t.id === taskId);
-    if (!task) return cancelEditing();
-
-    // Set loading state
-    setSavingGradeId(taskId);
-
+    setSavingGradeId(eventId);
     try {
-      // Optimistically update UI with new grade
-      const updatedGroups = groups.map((g) => {
-        if (g.date === groupDate) {
-          return {
-            ...g,
-            tasks: g.tasks.map((t) => {
-              if (t._id === taskId || t.id === taskId) {
-                return { ...t, grade };
-              }
-              return t;
-            }),
-          };
-        }
-        return g;
-      });
+      // Find the task in the groups to get the group date
+      let updatedGroups = [...groups];
+      let groupWithEvent;
 
-      // Update parent component state
-      if (typeof onGroupsUpdate === 'function') {
+      // Find the group containing this event
+      for (const group of groups) {
+        const taskIndex = group.tasks.findIndex((t) => t._id === eventId || t.id === eventId);
+
+        if (taskIndex !== -1) {
+          // Update the grade in our local state
+          const updatedTasks = [...group.tasks];
+          updatedTasks[taskIndex] = {
+            ...updatedTasks[taskIndex],
+            grade,
+          };
+
+          groupWithEvent = {
+            ...group,
+            tasks: updatedTasks,
+          };
+
+          updatedGroups = groups.map((g) => (g.date === group.date ? groupWithEvent : g));
+
+          break;
+        }
+      }
+
+      // Update parent component state if we found the event
+      if (groupWithEvent && typeof onGroupsUpdate === 'function') {
         onGroupsUpdate(updatedGroups);
       }
 
       // Call the API to update the grade
-      const success = await setEventGrade(taskId, grade);
+      const success = await setEventGrade(eventId, grade);
 
       if (!success) {
         console.error('Failed to save grade');
-        // Could revert the optimistic update here if needed
-      } else {
-        console.log('Grade saved successfully');
+        return false;
       }
+
+      return true;
     } catch (error) {
       console.error('Error saving grade:', error);
+      return false;
     } finally {
       setSavingGradeId(null);
-      cancelEditing();
     }
   };
 
@@ -199,37 +184,16 @@ function EventCompleted({ groups, onGroupsUpdate }) {
               {visibleTasks.map((task) => {
                 const taskId = task._id || task.id;
 
-                if (editing.groupDate === group.date && editing.taskId === taskId) {
-                  // Use the event's color or default to the theme color
-                  const eventColor = task.color || '#52796f';
-                  const isSaving = savingGradeId === taskId;
-
-                  return (
-                    <div
-                      key={taskId}
-                      className="event-card event-completed"
-                      style={{ '--event-color': eventColor }}
-                    >
-                      <h3 className="event-title">{task.title}</h3>
-                      <EventGradeInput
-                        initialGrade={task.grade}
-                        onSave={saveGrade}
-                        onCancel={cancelEditing}
-                        isLoading={isSaving}
-                      />
-                    </div>
-                  );
-                }
-
                 return (
                   <div key={taskId} className="event-card-wrapper">
-                    <EventCard
+                    <EventCardAdapter
                       task={task}
                       onToggle={() => markIncomplete(task)}
-                      onSetGrade={() => startEditing(group.date, taskId)}
+                      onSetGrade={handleSaveGrade}
                       onDelete={deleteEvent}
                       isUpdating={updatingEventId === taskId}
                       isDeleting={deletingEventId === taskId}
+                      isSavingGrade={savingGradeId === taskId}
                     />
                     {process.env.NODE_ENV === 'development' && (
                       <div

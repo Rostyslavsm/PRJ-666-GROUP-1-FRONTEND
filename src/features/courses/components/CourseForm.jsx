@@ -177,7 +177,7 @@ export default function CourseForm({ initialData, onSubmit, onCancel, isSubmitti
       <div className="modal-form-group">
         <label className="modal-label">Instructor Available Time Slots</label>
         {slotFields.map((field, idx) => (
-          <div key={field.id} className="course-schedule-item">
+          <div key={field.id} className="form-schedule-item">
             <select
               {...register(`instructor.availableTimeSlots.${idx}.weekday`, { valueAsNumber: true })}
               className="modal-input"
@@ -240,7 +240,7 @@ export default function CourseForm({ initialData, onSubmit, onCancel, isSubmitti
       <div className="modal-form-group">
         <label className="modal-label">Schedule</label>
         {scheduleFields.map((field, idx) => (
-          <div key={field.id} className="course-schedule-item">
+          <div key={field.id} className="form-schedule-item">
             <select {...register(`schedule.${idx}.classType`)} className="modal-input">
               <option value="lecture">Lecture</option>
               <option value="lab">Lab</option>
@@ -258,10 +258,9 @@ export default function CourseForm({ initialData, onSubmit, onCancel, isSubmitti
             <input type="time" {...register(`schedule.${idx}.startTime`)} className="modal-input" />
             <input type="time" {...register(`schedule.${idx}.endTime`)} className="modal-input" />
             <input
-              type="text"
-              placeholder="Location"
               {...register(`schedule.${idx}.location`)}
               className="modal-input"
+              placeholder="Location (room number)"
             />
             <button
               type="button"
@@ -289,18 +288,18 @@ export default function CourseForm({ initialData, onSubmit, onCancel, isSubmitti
         </button>
       </div>
 
-      {/* Submit */}
+      {/* Submit buttons */}
       <div className="modal-actions">
         <button
           type="button"
           onClick={onCancel}
-          disabled={isSubmitting}
           className="modal-button modal-cancel-button"
+          disabled={isSubmitting}
         >
           Cancel
         </button>
-        <button type="submit" disabled={isSubmitting} className="modal-button modal-submit-button">
-          {isSubmitting ? 'Saving...' : initialData ? 'Update Course' : 'Create Course'}
+        <button type="submit" className="modal-button modal-submit-button" disabled={isSubmitting}>
+          {isSubmitting ? 'Saving...' : initialData ? 'Update Course' : 'Add Course'}
         </button>
       </div>
 
@@ -371,7 +370,7 @@ export default function CourseForm({ initialData, onSubmit, onCancel, isSubmitti
           flex: 1;
         }
 
-        .course-schedule-item {
+        .form-schedule-item {
           display: flex;
           flex-wrap: wrap;
           gap: 10px;
@@ -394,12 +393,12 @@ export default function CourseForm({ initialData, onSubmit, onCancel, isSubmitti
             gap: 10px;
           }
 
-          .course-schedule-item {
+          .form-schedule-item {
             flex-direction: column;
             align-items: stretch;
           }
 
-          .course-schedule-item .modal-input {
+          .form-schedule-item .modal-input {
             margin-bottom: 5px;
           }
         }
