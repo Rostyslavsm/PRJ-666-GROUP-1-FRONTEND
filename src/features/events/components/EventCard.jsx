@@ -1,8 +1,8 @@
 import React from 'react';
-import { Trash2 } from 'lucide-react';
 import { LoadingAnimation } from '../../animations';
 import ConfirmationModal from '../../../componentShared/ConfirmationModal';
 import { useConfirmation } from '../../../componentShared/useConfirmation';
+import DeleteButton from '../../../componentShared/DeleteButton';
 
 function EventCard({
   task,
@@ -105,18 +105,12 @@ function EventCard({
           )}
 
           {isDeletable && (
-            <button
-              className="event-delete-button"
+            <DeleteButton
               onClick={handleDeleteClick}
+              isLoading={isDeleting}
               disabled={isUpdating || isDeleting}
               title="Delete event"
-            >
-              {isDeleting ? (
-                <LoadingAnimation size="small" style={{ width: 24, height: 24 }} />
-              ) : (
-                <Trash2 size={16} />
-              )}
-            </button>
+            />
           )}
         </div>
       </div>
