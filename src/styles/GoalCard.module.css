@@ -1,0 +1,102 @@
+/* GoalCard styles - aligned with CourseCard.module.css */
+.goalProgressContainer {
+  margin-top: 15px;
+  padding: 0.75rem;
+  background-color: rgba(var(--schedule-item-color, 82, 121, 111), 0.15);
+  border-radius: 8px;
+}
+
+.progressInfo {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+  color: #444;
+}
+
+.progressLabel {
+  font-weight: 500;
+}
+
+.progressValue {
+  font-weight: 600;
+}
+
+.progressBar {
+  height: 8px;
+  background-color: #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.progressFill {
+  height: 100%;
+  transition: width 0.5s ease-out;
+}
+
+.targetInfo {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.targetLabel {
+  display: flex;
+  align-items: center;
+}
+
+.targetValue {
+  font-weight: 600;
+}
+
+.statusIndicator {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+}
+
+.statusDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.weightIndicator {
+  display: flex;
+  height: 4px;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.weightCompleted {
+  background-color: #52796f;
+  height: 100%;
+}
+
+.weightRemaining {
+  background-color: #e9ecef;
+  height: 100%;
+}
+
+/* Animation to match CourseCard */
+.goalCard {
+  animation: slideInFromBottom 0.7s ease-out;
+}
+
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,6 +1,7 @@
 // src/features/goals/components/GoalForm.jsx
 import React from 'react';
 import { getAvailableCourses } from '../utils/goalUtils';
+import styles from '@/styles/GoalForm.module.css';
 
 const GoalForm = ({
   formData,
@@ -17,40 +18,41 @@ const GoalForm = ({
   const availableCourses = getAvailableCourses(courses, goals);
 
   return (
-    <div className="goals-form-container">
+    <div className={styles.formContainer}>
       <form onSubmit={onSubmit}>
-        <div className="goals-form-group">
-          <label className="goals-form-label">
+        <div className={styles.formGroup}>
+          <label className={styles.formLabel}>
             {editingId ? 'Course (Cannot be changed)' : 'Select Course'}
           </label>
 
           {editingId ? (
-            <div className="goals-course-display">
-              <div className="goals-course-name">{editingCourse?.name}</div>
-              <div className="goals-course-details">
-                {editingCourse?.code} • {editingCourse?.department}
+            <div className={styles.courseDisplay}>
+              <div className={styles.courseName}>{editingCourse?.title || editingCourse?.name}</div>
+              <div className={styles.courseDetails}>
+                {editingCourse?.code}{' '}
+                {editingCourse?.section && `• Section ${editingCourse.section}`}
               </div>
             </div>
           ) : (
             <select
               value={formData.courseId}
               onChange={(e) => onFormDataChange('courseId', e.target.value)}
-              className="goals-form-select"
+              className={styles.formSelect}
             >
               <option value="">Select a course</option>
               {availableCourses.map((course) => (
                 <option key={course._id} value={course._id}>
-                  {course.name} ({course.code})
+                  {course.title || course.name} ({course.code})
                 </option>
               ))}
             </select>
           )}
 
-          {formErrors.courseId && <p className="goals-error">{formErrors.courseId}</p>}
+          {formErrors.courseId && <p className={styles.error}>{formErrors.courseId}</p>}
         </div>
 
-        <div className="goals-form-group">
-          <label className="goals-form-label">Target Grade (%)</label>
+        <div className={styles.formGroup}>
+          <label className={styles.formLabel}>Target Grade (%)</label>
           <input
             type="number"
             min="0"
@@ -58,17 +60,25 @@ const GoalForm = ({
             step="0.1"
             value={formData.targetGrade}
             onChange={(e) => onFormDataChange('targetGrade', e.target.value)}
-            className="goals-form-input"
+            className={styles.formInput}
             placeholder="Enter target grade (0-100)"
           />
-          {formErrors.targetGrade && <p className="goals-error">{formErrors.targetGrade}</p>}
+          {formErrors.targetGrade && <p className={styles.error}>{formErrors.targetGrade}</p>}
         </div>
 
-        <div className="goals-form-actions">
-          <button type="button" onClick={onCancel} className="goals-button goals-button-secondary">
+        <div className={styles.formActions}>
+          <button
+            type="button"
+            onClick={onCancel}
+            className={`${styles.button} ${styles.buttonSecondary}`}
+          >
             Cancel
           </button>
-          <button type="submit" className="goals-button goals-button-primary" disabled={loading}>
+          <button
+            type="submit"
+            className={`${styles.button} ${styles.buttonPrimary}`}
+            disabled={loading}
+          >
             {loading ? 'Processing...' : editingId ? 'Update Goal' : 'Create Goal'}
           </button>
         </div>

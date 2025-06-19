@@ -1,88 +1,104 @@
 // src/features/goals/components/GoalCard.jsx
 import React from 'react';
+import CourseCard from '@/componentShared/CourseCard';
 import { calculateProgress, getProgressColor } from '../utils/goalUtils';
-import { Edit, Trash2 } from 'lucide-react';
+import styles from '@/styles/GoalCard.module.css';
 
-const GoalCard = ({ goal, onEdit, onDelete, loading }) => {
-  // alert(JSON.stringify(goal.course));
+const GoalCard = ({ goal, onEdit, onDelete, disabled }) => {
   const course = goal.course || {};
 
   const currentGrade = course.currentGrade || {};
-  const avg = currentGrade.avg ?? 0;
-  const totalWeightSoFar = currentGrade.totalWeightSoFar ?? 0;
-  const weightRemaining = currentGrade.weightRemaining ?? 100;
+
+  // Handle NaN values with default values
+  const avg = isNaN(currentGrade.avg) ? 0 : (currentGrade.avg ?? 0);
+  const totalWeightSoFar = isNaN(currentGrade.totalWeightSoFar)
+    ? 0
+    : (currentGrade.totalWeightSoFar ?? 0);
+  const weightRemaining = isNaN(currentGrade.weightRemaining)
+    ? 100
+    : (currentGrade.weightRemaining ?? 100);
 
   const progress = calculateProgress(avg, goal.targetGrade, totalWeightSoFar, weightRemaining);
   const progressColor = getProgressColor(progress);
 
-  return (
-    <div className="goals-card">
-      <div className="goals-card-content">
-        <div className="goals-card-header">
-          <div>
-            <h3 className="goals-card-title">{course.title || 'Untitled Course'}</h3>
-            <p className="goals-card-subtitle">{course.code || 'N/A'}</p>
-          </div>
-          <div className="goals-card-actions">
-            <button onClick={() => onEdit(goal)} disabled={loading}>
-              <Edit size={16} />
-            </button>
-            <button onClick={() => onDelete(goal._id)} disabled={loading}>
-              <Trash2 size={16} />
-            </button>
-          </div>
-        </div>
-        <div className="goals-stats-grid">
-          <div className="goals-stat-box">
-            <p className="goals-stat-label">Current Grade</p>
-            <p className="goals-stat-value">{avg}%</p>
-            <p className="goals-stat-note">
-              <span>✅</span> {totalWeightSoFar}% completed
-            </p>
-          </div>
-          <div className="goals-stat-box">
-            <p className="goals-stat-label">Target Grade</p>
-            <p className="goals-stat-value goals-target-value">{goal.targetGrade}%</p>
-            <p className="goals-stat-note">
-              <span>⏳</span> {weightRemaining}% remaining
-            </p>
-          </div>
-        </div>
+  // Format numbers to prevent NaN display
+  const formatNumber = (num) => {
+    return isNaN(num) ? 0 : Math.round(num);
+  };
 
-        <div className="goals-progress-container">
-          <div className="goals-progress-info">
-            <span>Overall Progress</span>
-            <span>{progress}%</span>
-          </div>
-          <div className="goals-progress-bar">
-            <div
-              className="goals-progress-fill"
-              style={{ width: `${progress}%`, backgroundColor: progressColor }}
-            ></div>
-          </div>
-          <div className="goals-weight-indicator">
-            <span style={{ width: `${totalWeightSoFar}%` }}></span>
-            <span style={{ width: `${weightRemaining}%` }}></span>
-          </div>
-        </div>
+  // Prepare the course data with goal-specific information
+  const courseWithGoalData = {
+    ...course,
+    // Override the current grade to show target grade info with NaN handling
+    currentGrade: {
+      avg: formatNumber(avg),
+      totalWeightSoFar: formatNumber(totalWeightSoFar),
+      weightRemaining: formatNumber(weightRemaining),
+      targetGrade: goal.targetGrade,
+      progress: formatNumber(progress),
+    },
+  };
 
-        <div className="goals-card-footer">
-          <span>Created: {new Date(goal.dateCreated).toLocaleDateString()}</span>
-          <div className="goals-status-indicator">
-            <span className="goals-status-dot" style={{ backgroundColor: progressColor }}></span>
-            {progress === 0
-              ? 'Good luck!'
-              : progress >= 90
-                ? 'Excellent progress'
-                : progress >= 70
-                  ? 'Good progress'
-                  : progress >= 50
-                    ? 'Needs improvement'
-                    : 'Critical - needs attention'}
-          </div>
-        </div>
+  // Custom content to add to the CourseCard
+  const goalContent = (
+    <div className={styles.goalProgressContainer}>
+      <div className={styles.progressInfo}>
+        <span className={styles.progressLabel}>
+          Progress toward target ({formatNumber(goal.targetGrade)}%)
+        </span>
+        <span className={styles.progressValue}>{formatNumber(progress)}%</span>
+      </div>
+
+      <div className={styles.progressBar}>
+        <div
+          className={styles.progressFill}
+          style={{
+            width: `${isNaN(progress) ? 0 : progress}%`,
+            backgroundColor: progressColor,
+          }}
+        ></div>
+      </div>
+
+      <div className={styles.weightIndicator}>
+        <div
+          className={styles.weightCompleted}
+          style={{ width: `${formatNumber(totalWeightSoFar)}%` }}
+        ></div>
+        <div
+          className={styles.weightRemaining}
+          style={{ width: `${formatNumber(weightRemaining)}%` }}
+        ></div>
+      </div>
+
+      <div className={styles.targetInfo}>
+        <span>Completed: {formatNumber(totalWeightSoFar)}%</span>
+        <span>Remaining: {formatNumber(weightRemaining)}%</span>
+      </div>
+
+      <div className={styles.statusIndicator}>
+        <span className={styles.statusDot} style={{ backgroundColor: progressColor }}></span>
+        {progress === 0
+          ? 'Good luck!'
+          : progress >= 90
+            ? 'Excellent progress'
+            : progress >= 70
+              ? 'Good progress'
+              : progress >= 50
+                ? 'Needs improvement'
+                : 'Critical - needs attention'}
       </div>
     </div>
+  );
+
+  return (
+    <CourseCard
+      course={courseWithGoalData}
+      onEdit={() => onEdit(goal)}
+      onDelete={() => onDelete(goal._id)}
+      isDeleting={disabled}
+      customStyles={{ marginBottom: '1rem' }}
+      eventButtons={goalContent}
+    />
   );
 };
 
