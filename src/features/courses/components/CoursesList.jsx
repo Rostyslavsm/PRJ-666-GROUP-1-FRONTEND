@@ -2,6 +2,7 @@ import React from 'react';
 import { LoadingAnimation } from '../../animations';
 import ConfirmationModal from '../../../componentShared/ConfirmationModal';
 import { useConfirmation } from '../../../componentShared/useConfirmation';
+import DeleteButton from '../../../componentShared/DeleteButton';
 
 export default function CoursesList({ courses, handleAdd, handleEdit, handleDelete, isDeleting }) {
   const { isConfirmationOpen, confirmationData, openConfirmation, closeConfirmation } =
@@ -40,17 +41,12 @@ export default function CoursesList({ courses, handleAdd, handleEdit, handleDele
             <button className="edit-course-button" onClick={() => handleEdit(course)}>
               Edit
             </button>
-            <button
-              className="delete-course-button"
+            <DeleteButton
               onClick={() => handleDeleteClick(course)}
+              isLoading={isDeleting}
               disabled={isDeleting}
-            >
-              {isDeleting ? (
-                <LoadingAnimation size="small" style={{ width: 24, height: 24 }} />
-              ) : (
-                'Delete'
-              )}
-            </button>
+              title="Delete course"
+            />
           </div>
           <div className="course-title-row">
             <h3 className="course-name">{course.title}</h3>

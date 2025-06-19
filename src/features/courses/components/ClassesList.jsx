@@ -2,6 +2,7 @@ import React from 'react';
 import { LoadingAnimation } from '../../animations';
 import ConfirmationModal from '../../../componentShared/ConfirmationModal';
 import { useConfirmation } from '../../../componentShared/useConfirmation';
+import DeleteButton from '../../../componentShared/DeleteButton';
 
 export default function ClassesList({ schedule, handleDeleteClass, isDeletingClass }) {
   const { isConfirmationOpen, confirmationData, openConfirmation, closeConfirmation } =
@@ -34,17 +35,12 @@ export default function ClassesList({ schedule, handleDeleteClass, isDeletingCla
             {sessions.map((s, idx) => (
               <div key={`${s.code}-${idx}`} className="session-card">
                 <div className="session-actions">
-                  <button
-                    className="delete-class-button"
+                  <DeleteButton
                     onClick={() => handleDeleteClick(s.id, s)}
+                    isLoading={isDeletingClass}
                     disabled={isDeletingClass}
-                  >
-                    {isDeletingClass ? (
-                      <LoadingAnimation size="small" style={{ width: 24, height: 24 }} />
-                    ) : (
-                      '×'
-                    )}
-                  </button>
+                    title="Delete class"
+                  />
                 </div>
                 <h5 className="session-title">{s.title || s.code}</h5>
                 <div className="session-meta">
