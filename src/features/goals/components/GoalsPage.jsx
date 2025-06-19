@@ -8,6 +8,7 @@ import GoalForm from '@/features/goals/components/GoalForm';
 import EmptyState from '@/features/goals/components/EmptyState';
 import ErrorState from '@/features/goals/components/ErrorState';
 import LoadingState from '@/features/goals/components/LoadingState';
+import Modal from '@/componentShared/Modal';
 
 const GoalsPage = () => {
   const { courses, goals, loading, error, operationLoading, setGoals, refreshGoals } = useGoals();
@@ -143,17 +144,41 @@ const GoalsPage = () => {
 
   return (
     <div className="goals-content">
-      {!showForm && (
-        <div className="add-course-row">
-          <button
-            className="button button-primary add-course-button"
-            onClick={() => setShowForm(true)}
-            disabled={availableCourses.length === 0 || operationLoading}
-          >
-            + Add Goal
-          </button>
-        </div>
-      )}
+      <div className="add-course-row">
+        <button
+          className="button button-primary add-course-button"
+          onClick={() => setShowForm(true)}
+          disabled={availableCourses.length === 0 || operationLoading}
+        >
+          + Add Goal
+        </button>
+      </div>
+
+      <Modal
+        isOpen={showForm}
+        onClose={() => {
+          setShowForm(false);
+          resetForm();
+        }}
+        title={editingId ? 'Edit Goal' : 'Add New Goal'}
+      >
+        <GoalForm
+          showForm={true}
+          formData={formData}
+          formErrors={formErrors}
+          editingId={editingId}
+          editingCourse={editingCourse}
+          courses={courses}
+          goals={goals}
+          onFormDataChange={handleInputChange}
+          onCancel={() => {
+            setShowForm(false);
+            resetForm();
+          }}
+          onSubmit={handleSubmit}
+          loading={isSubmitting}
+        />
+      </Modal>
 
       {!showForm && availableCourses.length > 0 && (
         <div className="goals-info-text" style={{ marginTop: '10px', marginBottom: '20px' }}>
@@ -163,20 +188,6 @@ const GoalsPage = () => {
           </p>
         </div>
       )}
-
-      <GoalForm
-        showForm={showForm}
-        formData={formData}
-        formErrors={formErrors}
-        editingId={editingId}
-        editingCourse={editingCourse}
-        courses={courses}
-        goals={goals}
-        onFormDataChange={handleInputChange}
-        onCancel={resetForm}
-        onSubmit={handleSubmit}
-        loading={isSubmitting}
-      />
 
       {goals.length === 0 ? (
         <EmptyState courses={courses} onAddGoal={() => setShowForm(true)} />

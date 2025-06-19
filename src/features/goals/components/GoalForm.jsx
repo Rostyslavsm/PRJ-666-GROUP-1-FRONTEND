@@ -1,9 +1,8 @@
 // src/features/goals/components/GoalForm.jsx
 import React from 'react';
-import { getAvailableCourses, getCourseById } from '../utils/goalUtils';
+import { getAvailableCourses } from '../utils/goalUtils';
 
 const GoalForm = ({
-  showForm,
   formData,
   formErrors,
   editingId,
@@ -15,13 +14,10 @@ const GoalForm = ({
   onSubmit,
   loading,
 }) => {
-  if (!showForm) return null;
-
   const availableCourses = getAvailableCourses(courses, goals);
 
   return (
     <div className="goals-form-container">
-      <h2 className="goals-form-title">{editingId ? 'Edit Goal' : 'Create New Goal'}</h2>
       <form onSubmit={onSubmit}>
         <div className="goals-form-group">
           <label className="goals-form-label">
