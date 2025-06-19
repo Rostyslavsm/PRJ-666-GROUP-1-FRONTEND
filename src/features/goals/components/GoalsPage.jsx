@@ -143,21 +143,17 @@ const GoalsPage = () => {
 
   return (
     <div className="goals-content">
-      <div className="goals-header">
-        <div>
-          <h1 className="goals-title">Study Goals</h1>
-          <p className="goals-subtitle">Set and track your academic targets</p>
+      {!showForm && (
+        <div className="add-course-row">
+          <button
+            className="button button-primary add-course-button"
+            onClick={() => setShowForm(true)}
+            disabled={availableCourses.length === 0 || operationLoading}
+          >
+            + Add Goal
+          </button>
         </div>
-        <button
-          onClick={() => setShowForm(true)}
-          disabled={availableCourses.length === 0 || operationLoading}
-          className={`goals-button ${
-            availableCourses.length === 0 ? 'goals-button-disabled' : 'goals-button-primary'
-          }`}
-        >
-          Add New Goal
-        </button>
-      </div>
+      )}
 
       {!showForm && availableCourses.length > 0 && (
         <div className="goals-info-text" style={{ marginTop: '10px', marginBottom: '20px' }}>
