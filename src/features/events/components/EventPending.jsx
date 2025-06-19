@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import ReactPaginate from 'react-paginate';
-import EventCard from './EventCard';
+import EventCardAdapter from './EventCardAdapter';
 import { useEvents } from '..';
 
-function EventsPending({ groups, onGroupsUpdate }) {
+function EventPending({ groups, onGroupsUpdate }) {
   const { toggleEventStatus, deleteEventById, fetchPending } = useEvents();
   const [pages, setPages] = useState({});
   const [width, setWidth] = useState(window.innerWidth);
@@ -19,9 +19,6 @@ function EventsPending({ groups, onGroupsUpdate }) {
   const perPage = width < 768 ? 1 : width < 1199 ? 2 : 3;
 
   const markDone = async (task) => {
-    // Debug the task to see what properties are available
-    console.log('Task being marked as done:', task);
-
     // Extract the correct ID based on what's available
     const eventId = task._id || task.id;
 
@@ -29,8 +26,6 @@ function EventsPending({ groups, onGroupsUpdate }) {
       console.error('Cannot mark as done: Missing task ID', task);
       return;
     }
-
-    console.log('Using event ID for update:', eventId);
 
     setUpdatingEventId(eventId);
     try {
@@ -48,7 +43,6 @@ function EventsPending({ groups, onGroupsUpdate }) {
       }
 
       await toggleEventStatus(eventId, true);
-      console.log('Event marked as done, refreshing list');
       // Refresh the events list after updating
       await fetchPending();
     } catch (error) {
@@ -63,8 +57,6 @@ function EventsPending({ groups, onGroupsUpdate }) {
       console.error('Cannot delete: Missing event ID');
       return;
     }
-
-    console.log('Deleting event with ID:', eventId);
 
     setDeletingEventId(eventId);
     try {
@@ -86,7 +78,6 @@ function EventsPending({ groups, onGroupsUpdate }) {
         console.error('Failed to delete event');
         alert('Failed to delete event. Please try again.');
       } else {
-        console.log('Event deleted successfully, refreshing list');
         // Refresh the events list after deletion
         await fetchPending();
       }
@@ -140,7 +131,7 @@ function EventsPending({ groups, onGroupsUpdate }) {
                 const taskId = task._id || task.id;
                 return (
                   <div key={taskId} className="event-card-wrapper">
-                    <EventCard
+                    <EventCardAdapter
                       task={task}
                       onToggle={() => markDone(task)}
                       onSetGrade={null}
@@ -192,4 +183,4 @@ function EventsPending({ groups, onGroupsUpdate }) {
   );
 }
 
-export default EventsPending;
+export default EventPending;

@@ -91,7 +91,10 @@
 
 .session-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Multiple cards in a row */
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(300px, 1fr)
+  ); /* Wider minimum width to force fewer cards */
   gap: 1.25rem;
   padding: 1rem;
   width: 100%;
@@ -535,7 +538,7 @@
   }
 
   .session-container {
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* 3-4 cards per row */
+    grid-template-columns: repeat(2, 1fr); /* Exactly 2 cards per row */
   }
 }
 
@@ -550,7 +553,7 @@
   }
 
   .session-container {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* 5+ cards per row */
+    grid-template-columns: repeat(3, 1fr); /* Exactly 3 cards per row */
   }
 }
 

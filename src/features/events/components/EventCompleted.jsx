@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ReactPaginate from 'react-paginate';
-import EventCard from './EventCard';
+import EventCardAdapter from './EventCardAdapter';
 import EventGradeInput from './EventGradeInput';
 import { useEvents } from '..';
 
@@ -34,9 +34,6 @@ function EventCompleted({ groups, onGroupsUpdate }) {
   };
 
   const markIncomplete = async (task) => {
-    // Debug the task to see what properties are available
-    console.log('Task being marked as incomplete:', task);
-
     // Extract the correct ID based on what's available
     const eventId = task._id || task.id;
 
@@ -44,8 +41,6 @@ function EventCompleted({ groups, onGroupsUpdate }) {
       console.error('Cannot mark as incomplete: Missing task ID', task);
       return;
     }
-
-    console.log('Using event ID for update:', eventId);
 
     setUpdatingEventId(eventId);
     try {
@@ -63,7 +58,6 @@ function EventCompleted({ groups, onGroupsUpdate }) {
       }
 
       await toggleEventStatus(eventId, false);
-      console.log('Event marked as incomplete, refreshing list');
       // Refresh the completed events list after updating
       await fetchCompleted();
     } catch (error) {
@@ -78,8 +72,6 @@ function EventCompleted({ groups, onGroupsUpdate }) {
       console.error('Cannot delete: Missing event ID');
       return;
     }
-
-    console.log('Deleting event with ID:', eventId);
 
     setDeletingEventId(eventId);
     try {
@@ -101,7 +93,6 @@ function EventCompleted({ groups, onGroupsUpdate }) {
         console.error('Failed to delete event');
         alert('Failed to delete event. Please try again.');
       } else {
-        console.log('Event deleted successfully, refreshing list');
         // Refresh the events list after deletion
         await fetchCompleted();
       }
@@ -154,9 +145,6 @@ function EventCompleted({ groups, onGroupsUpdate }) {
 
       if (!success) {
         console.error('Failed to save grade');
-        // Could revert the optimistic update here if needed
-      } else {
-        console.log('Grade saved successfully');
       }
     } catch (error) {
       console.error('Error saving grade:', error);
@@ -223,7 +211,7 @@ function EventCompleted({ groups, onGroupsUpdate }) {
 
                 return (
                   <div key={taskId} className="event-card-wrapper">
-                    <EventCard
+                    <EventCardAdapter
                       task={task}
                       onToggle={() => markIncomplete(task)}
                       onSetGrade={() => startEditing(group.date, taskId)}
