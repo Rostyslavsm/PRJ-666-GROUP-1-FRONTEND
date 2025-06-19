@@ -14,7 +14,7 @@ export default function GoalsPage() {
   return (
     <ProtectedRoute>
       <Layout>
-        <div className="goals-container">
+        <div className="">
           <Goals />
         </div>
       </Layout>

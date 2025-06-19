@@ -75,11 +75,7 @@ export default function Goals() {
         className="mb-6"
       />
 
-      {activeTab === TABS.GRADES && (
-        <div className="space-y-4">
-          <GoalsPage />
-        </div>
-      )}
+      {activeTab === TABS.GRADES && <GoalsPage />}
 
       {/* Progress Tab Content */}
       {activeTab === TABS.PROGRESS && (

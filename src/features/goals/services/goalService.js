@@ -331,6 +331,7 @@ export const updateGoal = async (goalId, targetGrade) => {
  * @param {string} goalId - ID of the goal to delete
  * @returns {Promise<Object>} Promise resolving to deletion result
  */
+// src/features/goals/services/goalService.js
 export const deleteGoal = async (goalId) => {
   try {
     // Validate goal ID
@@ -340,11 +341,6 @@ export const deleteGoal = async (goalId) => {
     }
 
     const headers = await getHeaders();
-
-    console.log('Environment:', process.env.NODE_ENV);
-    console.log('API Base URL:', API_BASE_URL);
-    console.log('Full request URL:', `${API_BASE_URL}/goals/${goalId}`);
-    console.log('Headers:', JSON.stringify(headers, null, 2));
 
     // Set up timeout
     const controller = new AbortController();
@@ -360,51 +356,64 @@ export const deleteGoal = async (goalId) => {
       clearTimeout(timeoutId);
 
       console.log('Response status:', response.status);
-      console.log('Response status text:', response.statusText);
 
-      if (!response.ok) {
-        if (response.status === 401) {
-          return { success: false, error: 'Unauthorized - Please log in again' };
-        }
+      // Handle 204 No Content response
+      if (response.status === 204) {
+        console.log('Delete successful (204 No Content)');
+        return { success: true };
+      }
 
-        if (response.status === 404) {
-          return { success: false, error: 'Goal not found' };
-        }
-
-        let errorText = '';
+      // Handle other success statuses
+      if (response.ok) {
         try {
-          errorText = await response.text();
-          console.error('Error response body:', errorText);
-
-          // Try to parse as JSON if possible
-          try {
-            const errorData = JSON.parse(errorText);
-            return {
-              success: false,
-              error:
-                errorData.errors?.join(', ') ||
-                errorData.message ||
-                `Server error: ${response.status} - ${response.statusText}`,
-            };
-          } catch (parseError) {
-            // If not JSON, use text directly
-            return {
-              success: false,
-              error: `Server error: ${response.status} - ${errorText || response.statusText}`,
-            };
-          }
-        } catch (textError) {
-          if (textError !== errorText) throw textError;
+          const data = await response.json();
+          return { success: true, data };
+        } catch (jsonError) {
+          console.error('JSON parsing error:', jsonError);
           return {
             success: false,
-            error: `Server error: ${response.status} - ${response.statusText}`,
+            error: 'Failed to parse server response',
           };
         }
       }
 
-      const data = await response.json();
-      console.log('Success response:', data);
-      return { success: true, data };
+      // Handle error statuses
+      if (response.status === 401) {
+        return { success: false, error: 'Unauthorized - Please log in again' };
+      }
+
+      if (response.status === 404) {
+        return { success: false, error: 'Goal not found' };
+      }
+
+      let errorText = '';
+      try {
+        errorText = await response.text();
+        console.error('Error response body:', errorText);
+
+        // Try to parse as JSON if possible
+        try {
+          const errorData = JSON.parse(errorText);
+          return {
+            success: false,
+            error:
+              errorData.errors?.join(', ') ||
+              errorData.message ||
+              `Server error: ${response.status} - ${response.statusText}`,
+          };
+        } catch (parseError) {
+          // If not JSON, use text directly
+          return {
+            success: false,
+            error: `Server error: ${response.status} - ${errorText || response.statusText}`,
+          };
+        }
+      } catch (textError) {
+        return {
+          success: false,
+          error: `Server error: ${response.status} - ${response.statusText}`,
+        };
+      }
     } catch (fetchError) {
       if (fetchError.name === 'AbortError') {
         return {

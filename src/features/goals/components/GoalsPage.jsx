@@ -87,20 +87,19 @@ const GoalsPage = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this goal?')) return;
 
-    try {
-      const originalGoals = [...goals];
-      const deletedGoal = goals.find((g) => g._id === id);
+    const originalGoals = [...goals];
 
+    try {
       // Optimistic update
       setGoals((prev) => prev.filter((goal) => goal._id !== id));
 
-      const { success } = await deleteGoal(id);
+      const result = await deleteGoal(id);
 
-      if (!success) {
-        throw new Error('Failed to delete goal on server');
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to delete goal on server');
       }
 
-      // Silent refresh to ensure consistency
+      // Refresh to ensure full consistency
       await refreshGoals();
     } catch (err) {
       // Revert on error
@@ -131,72 +130,70 @@ const GoalsPage = () => {
   }
 
   return (
-    <div className="goals-container">
-      <div className="goals-content">
-        <div className="goals-header">
-          <div>
-            <h1 className="goals-title">Study Goals</h1>
-            <p className="goals-subtitle">Set and track your academic targets</p>
-          </div>
-          <button
-            onClick={() => setShowForm(true)}
-            disabled={availableCourses.length === 0 || operationLoading}
-            className={`goals-button ${
-              availableCourses.length === 0 ? 'goals-button-disabled' : 'goals-button-primary'
-            }`}
-          >
-            Add New Goal
-          </button>
+    <div className="goals-content">
+      <div className="goals-header">
+        <div>
+          <h1 className="goals-title">Study Goals</h1>
+          <p className="goals-subtitle">Set and track your academic targets</p>
         </div>
-
-        <GoalForm
-          showForm={showForm}
-          formData={formData}
-          formErrors={formErrors}
-          editingId={editingId}
-          editingCourse={editingCourse}
-          courses={courses}
-          goals={goals}
-          onFormDataChange={handleInputChange}
-          onCancel={resetForm}
-          onSubmit={handleSubmit}
-          loading={isSubmitting}
-        />
-
-        {goals.length === 0 ? (
-          <EmptyState courses={courses} onAddGoal={() => setShowForm(true)} />
-        ) : (
-          <div className="goals-grid">
-            {goals.map((goal) => {
-              const course = getCourseById(courses, goal.courseId);
-              if (!course) {
-                console.warn('Missing course for goal:', goal);
-                return null;
-              }
-
-              return (
-                <GoalCard
-                  key={goal._id}
-                  goal={goal}
-                  course={course}
-                  onEdit={() => handleEdit(goal)}
-                  onDelete={() => handleDelete(goal._id)}
-                  disabled={operationLoading}
-                />
-              );
-            })}
-          </div>
-        )}
-
-        {!showForm && availableCourses.length > 0 && (
-          <div className="goals-info-text">
-            <p>
-              You can set goals for {availableCourses.length} more course
-              {availableCourses.length > 1 ? 's' : ''}
-            </p>
-          </div>
-        )}
+        <button
+          onClick={() => setShowForm(true)}
+          disabled={availableCourses.length === 0 || operationLoading}
+          className={`goals-button ${
+            availableCourses.length === 0 ? 'goals-button-disabled' : 'goals-button-primary'
+          }`}
+        >
+          Add New Goal
+        </button>
       </div>
+
+      {!showForm && availableCourses.length > 0 && (
+        <div className="goals-info-text" style={{ marginTop: '10px', marginBottom: '20px' }}>
+          <p>
+            You can set goals for {availableCourses.length} more course
+            {availableCourses.length > 1 ? 's' : ''}
+          </p>
+        </div>
+      )}
+
+      <GoalForm
+        showForm={showForm}
+        formData={formData}
+        formErrors={formErrors}
+        editingId={editingId}
+        editingCourse={editingCourse}
+        courses={courses}
+        goals={goals}
+        onFormDataChange={handleInputChange}
+        onCancel={resetForm}
+        onSubmit={handleSubmit}
+        loading={isSubmitting}
+      />
+
+      {goals.length === 0 ? (
+        <EmptyState courses={courses} onAddGoal={() => setShowForm(true)} />
+      ) : (
+        <div className="goals-grid">
+          {goals.map((goal) => {
+            const course = getCourseById(courses, goal.courseId);
+            if (!course) {
+              console.warn('Missing course for goal:', goal);
+              return null;
+            }
+
+            return (
+              <GoalCard
+                key={goal._id}
+                goal={goal}
+                course={course}
+                onEdit={() => handleEdit(goal)}
+                onDelete={() => handleDelete(goal._id)}
+                disabled={operationLoading}
+              />
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };

@@ -1,6 +1,7 @@
 // src/features/goals/components/GoalCard.jsx
 import React from 'react';
 import { calculateProgress, getProgressColor } from '../utils/goalUtils';
+import { Edit, Trash2 } from 'lucide-react';
 
 const GoalCard = ({ goal, course, onEdit, onDelete, loading }) => {
   const progress = calculateProgress(course.currentGrade, goal.targetGrade);
@@ -11,10 +12,8 @@ const GoalCard = ({ goal, course, onEdit, onDelete, loading }) => {
       <div className="goals-card-content">
         <div className="goals-card-header">
           <div>
-            <h3 className="goals-card-title">{course.name}</h3>
-            <p className="goals-card-subtitle">
-              {course.code} • {course.department}
-            </p>
+            <h3 className="goals-card-title">{course.title}</h3>
+            <p className="goals-card-subtitle">{course.code}</p>
           </div>
           <div className="goals-card-actions">
             <button
@@ -23,7 +22,7 @@ const GoalCard = ({ goal, course, onEdit, onDelete, loading }) => {
               title="Edit goal"
               disabled={loading}
             >
-              <div className="goals-edit-icon"></div>
+              <Edit size={16} />
             </button>
             <button
               onClick={() => onDelete(goal._id)}
@@ -31,7 +30,7 @@ const GoalCard = ({ goal, course, onEdit, onDelete, loading }) => {
               title="Delete goal"
               disabled={loading}
             >
-              <span className="goals-del-icon"></span>
+              <Trash2 size={16} />
             </button>
           </div>
         </div>
