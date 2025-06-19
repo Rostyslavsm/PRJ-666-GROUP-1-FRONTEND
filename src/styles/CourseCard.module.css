@@ -1,0 +1,160 @@
+/* CourseCard styles */
+.courseCard {
+  position: relative;
+  background-color: #cad2c5;
+  border-radius: 17px;
+  padding: 1.25rem;
+  margin-bottom: 16px;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  color: #333;
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  animation: slideInFromBottom 0.7s ease-out;
+}
+
+.courseCard:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-7px);
+}
+
+/* Course title row */
+.titleRow {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+  padding-right: 7rem; /* Add padding to prevent overlap with action buttons */
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Course name heading */
+.courseName {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
+  max-width: 70%;
+}
+
+/* Course code badge */
+.codeBadge {
+  background-color: var(--color-secondary);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* Course metadata */
+.metadata {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.metadata div {
+  margin-bottom: 0.5rem;
+}
+
+/* Course label */
+.label {
+  font-weight: 500;
+  color: #444;
+}
+
+/* Schedule heading */
+.scheduleHeading {
+  color: #444;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0.75rem 0;
+}
+
+/* Course schedule */
+.schedule {
+  margin-bottom: 1rem;
+  flex-grow: 1;
+}
+
+/* Schedule item */
+.scheduleItem {
+  display: flex;
+  justify-content: space-between;
+  background-color: rgba(var(--schedule-item-color, 82, 121, 111), 0.15);
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.scheduleDay {
+  font-weight: 500;
+}
+
+.scheduleTime {
+  color: var(--color-secondary);
+}
+
+/* Course grade */
+.grade {
+  margin-top: auto;
+  font-size: 1.125rem;
+  padding: 0.5rem;
+  background-color: rgba(var(--schedule-item-color, 82, 121, 111), 0.15);
+  border-radius: 0.375rem;
+  display: inline-block;
+}
+
+/* Action buttons container */
+.actions {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  display: flex;
+  gap: 0.5rem;
+  z-index: 5;
+}
+
+/* Edit button */
+.editButton {
+  background-color: var(--color-secondary);
+  color: #cad2c5;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.editButton:hover {
+  background-color: #3a5a40;
+  transform: translateY(-2px);
+}
+
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

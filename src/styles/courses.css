@@ -371,7 +371,8 @@
   gap: 0.75rem;
 }
 
-.schedule-item {
+/* Form schedule item - different from CourseCard schedule item! */
+.form-schedule-item {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -381,14 +382,14 @@
   margin-bottom: 0.5rem;
 }
 
-.schedule-item .form-select,
-.schedule-item .form-time {
+.form-schedule-item .form-select,
+.form-schedule-item .form-time {
   flex: 1 1 auto;
   min-width: 100px;
 }
 
 /* Fix spacing for buttons */
-.schedule-item button,
+.form-schedule-item button,
 .form-group button {
   margin-top: 0.5rem;
 }
@@ -455,19 +456,16 @@
 /* Empty state message */
 .empty-state {
   text-align: center;
-  padding: 2.5rem;
-  background-color: #f8f8f8;
-  border-radius: 8px;
+  padding: 2rem;
+  background-color: rgba(var(--schedule-item-color, 82, 121, 111), 0.1);
+  border-radius: 0.5rem;
   margin: 1rem 0;
-  border: 1px solid #e0e0e0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .empty-state-message {
-  font-size: 1.1rem;
-  color: #555;
-  margin-bottom: 1.5rem;
-  font-weight: 500;
+  font-size: 1.25rem;
+  color: #cad2c5;
+  margin-bottom: 1rem;
 }
 
 .empty-state .add-course-button {
@@ -505,7 +503,7 @@
 
 /* Media queries */
 @media (max-width: 768px) {
-  .schedule-item {
+  .form-schedule-item {
     flex-direction: column;
     align-items: stretch;
   }
@@ -521,7 +519,7 @@
     padding: 0.6rem 0.4rem;
   }
 
-  .schedule-item .modal-input {
+  .form-schedule-item .modal-input {
     margin-bottom: 5px;
   }
 }
@@ -554,215 +552,6 @@
   .session-container {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* 5+ cards per row */
   }
-}
-
-/* CONSISTENT STYLING FOR CARDS */
-
-/* Courses (yellow-ish background) */
-.course-card {
-  background-color: #cad2c5 !important; /* pastel yellow */
-  color: #212529 !important; /* dark readable text */
-}
-
-/* Classes (same yellow background as courses) */
-.session-card {
-  background-color: #fff3cd !important; /* pastel yellow */
-  color: #212529 !important; /* dark readable text */
-  border-radius: 17px;
-  padding: 1.25rem;
-  margin-bottom: 16px;
-  transition: all 0.2s ease;
-  position: relative;
-  overflow: hidden;
-  border-left: 5px solid #52796f; /* Left border for session cards */
-}
-
-.course-card:hover,
-.session-card:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transform: translateY(-7px);
-}
-
-/* Course title row */
-.course-title-row {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 8px;
-  padding-right: 7rem; /* Add padding to prevent overlap with action buttons */
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-/* Course name heading */
-.course-name {
-  margin: 0;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #333;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  hyphens: auto;
-  max-width: 70%;
-}
-
-/* Course info styling */
-.course-info {
-  margin: 8px 0 12px;
-  font-size: 0.9rem;
-  color: #666;
-}
-
-.course-info div {
-  margin-bottom: 0.5rem;
-}
-
-/* Schedule heading */
-.schedule-heading {
-  color: #444;
-  font-size: 1rem;
-  font-weight: 600;
-  margin: 0.75rem 0;
-}
-
-/* Schedule item styling */
-.schedule-item {
-  background-color: rgba(var(--schedule-item-color, 82, 121, 111), 0.15);
-  padding: 0.5rem;
-  border-radius: 0.375rem;
-  margin-bottom: 0.5rem;
-}
-
-/* Course grade styling */
-.course-grade {
-  margin-top: 1rem;
-  font-size: 1.125rem;
-  padding: 0.5rem;
-  background-color: rgba(var(--schedule-item-color, 82, 121, 111), 0.2);
-  border-radius: 0.375rem;
-  display: inline-block;
-}
-
-/* Session title styling - already defined above */
-
-/* Loading indicator */
-.courses-container .loading-indicator {
-  text-align: center;
-  padding: 2rem;
-  font-size: 1.25rem;
-  color: #2f3e46;
-}
-
-/* Empty state message */
-.empty-state {
-  text-align: center;
-  padding: 2rem;
-  background-color: rgba(var(--schedule-item-color, 82, 121, 111), 0.1);
-  border-radius: 0.5rem;
-  margin: 1rem 0;
-}
-
-.empty-state-message {
-  font-size: 1.25rem;
-  color: #cad2c5;
-  margin-bottom: 1rem;
-}
-
-.empty-state .add-course-button {
-  display: inline-block;
-  margin: 0 auto;
-}
-
-/* Session meta styling */
-.session-meta {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
-}
-
-.session-time {
-  font-weight: 500;
-  color: #52796f;
-}
-
-.session-type {
-  text-align: right;
-}
-
-.session-type-badge {
-  color: #fff;
-  font-size: 0.85rem;
-  background: var(--color-secondary);
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  font-weight: 500;
-}
-
-.session-details {
-  font-size: 0.95rem;
-  color: #555;
-  line-height: 1.5;
-  margin: 0.5rem 0;
-  flex-grow: 1;
-}
-
-.session-details div {
-  margin-bottom: 0.5rem;
-}
-
-/* Course code badge */
-.course-code-badge {
-  background-color: #52796f;
-  color: white;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  font-weight: 500;
-}
-
-/* Course metadata */
-.course-metadata {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 12px;
-  font-size: 0.9rem;
-  color: #666;
-}
-
-/* Course label */
-.course-label {
-  font-weight: 500;
-  color: #444;
-}
-
-/* Course schedule */
-.course-schedule {
-  margin-bottom: 1rem;
-  flex-grow: 1;
-}
-
-/* Schedule item */
-.schedule-item {
-  display: flex;
-  justify-content: space-between;
-  background-color: rgba(var(--schedule-item-color, 82, 121, 111), 0.15);
-  padding: 0.5rem 0.75rem;
-  border-radius: 4px;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
-  color: #555;
-}
-
-.schedule-day {
-  font-weight: 500;
-}
-
-.schedule-time {
-  color: #52796f;
 }
 
 /* Loading container styles */
