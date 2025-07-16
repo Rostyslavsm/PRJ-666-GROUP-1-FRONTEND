@@ -4,11 +4,13 @@ import { useState } from 'react';
 import TabsBar from '@/componentShared/TabsBar';
 import AIChatWindow from '@/componentShared/AIChatWindow';
 import GoalsPage from '@/features/goals/components/GoalsPage';
+import Estimates from '@/features/goals/components/Estimates';
 
 // Define tab constants
 const TABS = {
   MY_GOALS: 'myGoals',
   REPORTS: 'reports',
+  ESTIMATES: 'estimates',
 };
 
 export default function Goals() {
@@ -101,12 +103,55 @@ export default function Goals() {
     );
   };
 
+  
+  const renderEstimatesContent = () => {
+    return(
+    <div className="bg-white p-6 rounded-lg shadow">
+        <h2 className="text-xl font-semibold mb-4">Grade Calculator</h2>
+        <p className="text-gray-600 mb-4">Review your current Grade</p>
+
+        <div className="space-y-4">
+          <div className="p-4 border rounded-lg hover:bg-gray-50 cursor-pointer flex justify-between items-center">
+            <div>
+              <h3 className="font-medium">Estimated Grade</h3>
+              <p className="text-sm text-gray-500">Overview of your estimated grades</p>
+            </div>
+            <button className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
+              Generate
+            </button>
+          </div>
+
+          <div className="p-4 border rounded-lg hover:bg-gray-50 cursor-pointer flex justify-between items-center">
+            <div>
+              <h3 className="font-medium">GRADE</h3>
+              <p className="text-sm text-gray-500">Your Current Grade</p>
+            </div>
+            <button className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
+              Grade
+            </button>
+          </div>
+
+          <div className="p-4 border rounded-lg hover:bg-gray-50 cursor-pointer flex justify-between items-center">
+            <div>
+              <h3 className="font-medium">Estimate</h3>
+              <p className="text-sm text-gray-500">Estimate</p>
+            </div>
+            <button className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
+              Generate
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-4xl mx-auto">
       <TabsBar
         tabs={[
           { id: TABS.MY_GOALS, label: 'My Goals' },
           { id: TABS.REPORTS, label: 'Reports' },
+          { id: TABS.ESTIMATES, label: 'Estimates' },
         ]}
         activeTab={activeTab}
         onTabChange={handleTabChange}
@@ -115,6 +160,7 @@ export default function Goals() {
 
       {activeTab === TABS.MY_GOALS && <GoalsPage />}
       {activeTab === TABS.REPORTS && renderReportsContent()}
+      {activeTab === TABS.ESTIMATES && <Estimates />}
 
       <AIChatWindow />
     </div>

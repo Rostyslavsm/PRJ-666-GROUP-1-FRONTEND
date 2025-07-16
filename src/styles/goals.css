@@ -189,6 +189,110 @@
   gap: 1.5rem;
 }
 
+.goals-input-title {
+  font-size: large;
+  width: 100%;
+}
+
+.goals-input {
+  font-size: large;
+  padding-left: 25px;
+  width: 100%;
+  text-align: center;
+}
+
+.grade-cell-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.goals-input-grade {
+  
+  text-align: center;
+  padding-left: 55px;
+  width: 100%;
+  font-size: large;
+}
+
+
+.goals-estimates-group-container {
+  background: #2f3e46;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.goals-estimates-group-title {
+  padding: 1rem 1.5rem;
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  font-weight: 600;
+  color: #cad2c5;
+  background: #52796f;
+  margin: 0;
+}
+
+.goals-estimates-card {
+  position: relative;
+  background-color: #fff;
+  border-radius: 17px;
+  padding: 1.25rem;
+  margin-bottom: 16px;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  color: #333;
+  min-height: 50px;
+  display: flex;
+  flex-direction: column;
+}
+
+.goals-estimates-table-container {
+  padding: 25px;
+  padding-bottom: 0;
+}
+
+.goals-estimates-past-events-table {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+  
+  
+}
+
+.goals-estimates-past-events-table th,
+.goals-estimates-past-events-table td {
+  font-size: larger;
+  padding: 8px;
+
+}
+
+/* Alternate row color */
+.goals-estimates-past-events-table tr:nth-child(even) {
+  background-color: rgba(var(--schedule-item-color, 82, 121, 111), 0.15);
+}
+
+/* Make title column wider */
+.goals-estimates-past-events-table th:nth-child(1),
+.goals-estimates-past-events-table td:nth-child(1) {
+  width: 60%;
+}
+
+.goals-estimates-past-events-table th:nth-child(1){
+
+  text-align: left;
+}
+
+/* Weight and grade columns smaller */
+.goals-estimates-past-events-table td:nth-child(2),
+.goals-estimates-past-events-table td:nth-child(3) {
+  width: 20%;
+  text-align: center;
+}
+
 @media (min-width: 768px) {
   .goals-grid {
     grid-template-columns: repeat(2, 1fr);
