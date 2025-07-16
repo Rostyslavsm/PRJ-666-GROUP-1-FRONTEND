@@ -4,6 +4,7 @@ import { useState } from 'react';
 import TabsBar from '@/componentShared/TabsBar';
 import AIChatWindow from '@/componentShared/AIChatWindow';
 import GoalsPage from '@/features/goals/components/GoalsPage';
+import GoalReportPage from './Report';
 
 // Define tab constants
 const TABS = {
@@ -114,7 +115,7 @@ export default function Goals() {
       />
 
       {activeTab === TABS.MY_GOALS && <GoalsPage />}
-      {activeTab === TABS.REPORTS && renderReportsContent()}
+      {activeTab === TABS.REPORTS && <GoalReportPage />}
 
       <AIChatWindow />
     </div>

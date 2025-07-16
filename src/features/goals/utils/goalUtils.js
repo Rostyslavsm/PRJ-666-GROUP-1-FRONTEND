@@ -33,7 +33,6 @@ export const calculateProgress = (currentGrade, targetGrade, totalWeightSoFar, w
 };
 
 export const getProgressColor = (progress) => {
-  console.log('progress is ', progress);
   if (progress === 0) return '#000000';
   if (progress >= 90) return '#10B981'; // Green
   if (progress >= 70) return '#FBBF24'; // Yellow

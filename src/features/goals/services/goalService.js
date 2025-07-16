@@ -73,8 +73,8 @@ export const fetchGoals = async (expandCourses = false) => {
 
       clearTimeout(timeoutId);
 
-      console.log('Response status:', response.status);
-      console.log('Response status text:', response.statusText);
+      // console.log('Response status:', response.status);
+      // console.log('Response status text:', response.statusText);
 
       if (!response.ok) {
         if (response.status === 401) {
@@ -178,8 +178,8 @@ export const createGoal = async (goalData) => {
 
       clearTimeout(timeoutId);
 
-      console.log('Response status:', response.status);
-      console.log('Response status text:', response.statusText);
+      // console.log('Response status:', response.status);
+      // console.log('Response status text:', response.statusText);
 
       if (!response.ok) {
         if (response.status === 401) {
@@ -272,8 +272,8 @@ export const updateGoal = async (goalId, targetGrade) => {
 
       clearTimeout(timeoutId);
 
-      console.log('Response status:', response.status);
-      console.log('Response status text:', response.statusText);
+      // console.log('Response status:', response.status);
+      // console.log('Response status text:', response.statusText);
 
       if (!response.ok) {
         if (response.status === 401) {
@@ -355,7 +355,7 @@ export const deleteGoal = async (goalId) => {
 
       clearTimeout(timeoutId);
 
-      console.log('Response status:', response.status);
+      // console.log('Response status:', response.status);
 
       // Handle 204 No Content response
       if (response.status === 204) {
@@ -457,8 +457,8 @@ export const fetchCourses = async () => {
 
       clearTimeout(timeoutId);
 
-      console.log('Response status:', response.status);
-      console.log('Response status text:', response.statusText);
+      // console.log('Response status:', response.status);
+      // console.log('Response status text:', response.statusText);
 
       if (!response.ok) {
         if (response.status === 401) {
@@ -508,5 +508,75 @@ export const fetchCourses = async () => {
   } catch (error) {
     console.error('Failed to fetch courses:', error);
     return [];
+  }
+};
+
+/**
+ * Fetches all goals report for the user
+ * @param {boolean} expandCourses - Whether to expand course data
+ * @returns {Promise<Array>} Promise resolving to array of goals
+ */
+export const fetchGoalReports = async (goalId) => {
+  if (!goalId || goalId.length !== 24) {
+    console.error('Invalid goal ID');
+    return { success: false, error: 'Invalid goal ID' };
+  }
+
+  try {
+    const headers = await getHeaders();
+    const url = `${API_BASE_URL}/goals/${goalId}/report`;
+
+    console.log('Environment:', process.env.NODE_ENV);
+    console.log('API Base URL:', API_BASE_URL);
+    console.log('Full request URL:', url);
+    console.log('Headers:', JSON.stringify(headers, null, 2));
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        headers,
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error('Unauthorized - Please log in again');
+        }
+        if (response.status === 404) {
+          throw new Error('Goal not found');
+        }
+
+        let errorText = await response.text();
+        try {
+          const errorData = JSON.parse(errorText);
+          throw new Error(
+            errorData.errors?.join(', ') ||
+              errorData.message ||
+              `Server error: ${response.status} - ${response.statusText}`
+          );
+        } catch {
+          throw new Error(`Server error: ${response.status} - ${errorText}`);
+        }
+      }
+
+      const data = await response.json();
+      console.log('Success response:', data);
+      return data;
+    } catch (fetchError) {
+      if (fetchError.name === 'AbortError') {
+        throw new Error('Request timed out - The server took too long to respond');
+      }
+      throw fetchError;
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  } catch (error) {
+    console.error('Failed to fetch goal report:', error);
+    return { success: false, error: error.message || 'Failed to fetch goal report' };
   }
 };

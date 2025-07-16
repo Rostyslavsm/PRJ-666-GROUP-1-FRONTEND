@@ -1,0 +1,198 @@
+/* Card container */
+.report-card {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 3rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* Header section */
+.report-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 2rem;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+}
+
+.report-course-code {
+  display: inline-block;
+  font-size: 0.9rem;
+  color: #6a11cb;
+  background: rgba(106, 17, 203, 0.1);
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  margin-bottom: 0.5rem;
+}
+
+.report-course-title {
+  margin: 0;
+  font-size: 1.8rem;
+  color: #2c3e50;
+}
+
+/* Stats container */
+.report-stats-container {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.report-pill {
+  background: white;
+  padding: 0.7rem 1.2rem;
+  border-radius: 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.report-pill-label {
+  font-size: 0.8rem;
+  color: #7f8c8d;
+  display: block;
+}
+
+.report-pill-value {
+  font-size: 1.4rem;
+  color: #2c3e50;
+}
+
+.report-pill-success {
+  color: #27ae60;
+  background: rgba(46, 204, 113, 0.1);
+}
+
+.report-pill-danger {
+  color: #e74c3c;
+  background: rgba(231, 76, 60, 0.1);
+}
+
+/* Progress bar */
+.report-progress-container {
+  height: 6px;
+  background: #ecf0f1;
+  margin: 0 2rem;
+  position: relative;
+}
+
+.report-progress-bar {
+  height: 100%;
+  position: absolute;
+  border-radius: 3px;
+  transition: all 0.3s ease;
+}
+
+.report-progress-label {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  padding: 0.3rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Recommendation */
+.report-recommendation {
+  padding: 1.5rem 2rem;
+  background: #fff9e6;
+  border-top: 1px solid #ffeeba;
+  border-bottom: 1px solid #ffeeba;
+}
+
+.report-recommendation h4 {
+  margin: 0;
+  color: #d35400;
+}
+
+.report-recommendation p {
+  margin: 0;
+  color: #7d6608;
+  line-height: 1.5;
+}
+
+/* Content sections */
+.report-content {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 2rem;
+  gap: 2rem;
+}
+
+.report-section {
+  flex: 1;
+  min-width: 300px;
+}
+
+.report-section h3 {
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+
+/* Event cards */
+.report-event-card {
+  margin-bottom: 1rem;
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.report-event-indicator {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+}
+
+.report-event-details strong {
+  display: block;
+  color: #2c3e50;
+}
+
+.report-event-details small {
+  color: #7f8c8d;
+}
+
+/* Past event cards */
+.report-past-event-card {
+  margin-bottom: 1rem;
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.report-past-event-grade {
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: #2c3e50;
+}
+
+.report-past-event-details {
+  flex: 1;
+  margin-left: 1rem;
+}
+
+.report-past-event-details div {
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.report-past-event-details small {
+  color: #7f8c8d;
+}
+
+/* Empty state */
+.report-empty-message {
+  color: #95a5a6;
+  font-style: italic;
+}
