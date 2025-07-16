@@ -1,0 +1,241 @@
+/* Card container */
+.report-card {
+  background: #cad2c5;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 3rem;
+  box-shadow: 0 5px 15px rgba(84, 104, 84, 0.15);
+}
+
+/* Header section */
+.report-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 2rem;
+  background: #cad2c5;
+  border-bottom: 1px solid rgba(120, 138, 120, 0.3);
+}
+
+.report-course-code {
+  display: inline-block;
+  font-size: 0.9rem;
+  color: #354f52;
+  background: rgba(53, 79, 82, 0.1);
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  margin-bottom: 0.5rem;
+}
+
+.report-course-title {
+  margin: 0;
+  font-size: 1.8rem;
+  color: #2f3e46;
+}
+
+/* Stats container */
+.report-stats-container {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.report-pill {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 0.7rem 1.2rem;
+  border-radius: 30px;
+  box-shadow: 0 2px 8px rgba(84, 104, 84, 0.1);
+  text-align: center;
+  backdrop-filter: blur(2px);
+}
+
+.report-pill-label {
+  font-size: 0.8rem;
+  color: #52796f;
+  display: block;
+}
+
+.report-pill-value {
+  font-size: 1.4rem;
+  color: #2f3e46;
+}
+
+.report-pill-success {
+  color: #2a6f4a;
+  background: rgba(42, 111, 74, 0.12);
+}
+
+.report-pill-danger {
+  color: #9e2a2b;
+  background: rgba(158, 42, 43, 0.12);
+}
+
+/* NEW Progress Section */
+.report-progress-section {
+  padding: 1.5rem 2rem;
+  background: rgba(255, 255, 255, 0.6);
+  border-top: 1px solid rgba(120, 138, 120, 0.2);
+  border-bottom: 1px solid rgba(120, 138, 120, 0.2);
+}
+
+.progress-status {
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.status-icon {
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.progress-bar-container {
+  margin-top: 1rem;
+}
+
+.progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #52796f;
+  margin-bottom: 0.5rem;
+}
+
+.progress-bar-track {
+  height: 12px;
+  background: rgba(120, 138, 120, 0.15);
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  transition: width 0.5s ease;
+}
+
+.progress-target-marker {
+  position: absolute;
+  top: -3px;
+  width: 3px;
+  height: 18px;
+  background: #2f3e46;
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+/* Recommendation */
+.report-recommendation {
+  padding: 1.5rem 2rem;
+  background: rgba(255, 249, 230, 0.7);
+  border-top: 1px solid rgba(255, 238, 186, 0.5);
+  border-bottom: 1px solid rgba(255, 238, 186, 0.5);
+  backdrop-filter: blur(2px);
+}
+
+.report-recommendation h4 {
+  margin: 0;
+  color: #6b4423;
+}
+
+.report-recommendation p {
+  margin: 0;
+  color: #6b5e39;
+  line-height: 1.5;
+}
+
+/* Content sections */
+.report-content {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 2rem;
+  gap: 2rem;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.report-section {
+  flex: 1;
+  min-width: 300px;
+}
+
+.report-section h3 {
+  color: #354f52;
+  margin-bottom: 1rem;
+}
+
+/* Event cards */
+.report-event-card {
+  margin-bottom: 1rem;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(84, 104, 84, 0.08);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  backdrop-filter: blur(2px);
+  border: 1px solid rgba(210, 215, 210, 0.5);
+}
+
+.report-event-indicator {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+}
+
+.report-event-details strong {
+  display: block;
+  color: #354f52;
+}
+
+.report-event-details small {
+  color: #52796f;
+}
+
+/* Past event cards */
+.report-past-event-card {
+  margin-bottom: 1rem;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(84, 104, 84, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  backdrop-filter: blur(2px);
+  border: 1px solid rgba(210, 215, 210, 0.5);
+}
+
+.report-past-event-grade {
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: #354f52;
+}
+
+.report-past-event-details {
+  flex: 1;
+  margin-left: 1rem;
+}
+
+.report-past-event-details div {
+  font-weight: 600;
+  color: #354f52;
+}
+
+.report-past-event-details small {
+  color: #52796f;
+}
+
+/* Empty state */
+.report-empty-message {
+  color: #84a98c;
+  font-style: italic;
+}
