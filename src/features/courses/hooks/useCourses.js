@@ -8,6 +8,8 @@ export function useCourses() {
   const [schedule, setSchedule] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [archivedCourses, setArchivedCourses] = useState([]);
+  const [pastClasses, setPastClasses] = useState([]);
 
   // Fetch courses and classes from the backend
   useEffect(() => {
@@ -39,7 +41,7 @@ export function useCourses() {
       }
 
       //  Fetch courses
-      const courseRes = await fetch(`${API_BASE_URL}/v1/courses?active=true`, {
+      const courseRes = await fetch(`${API_BASE_URL}/v1/courses`, {
         headers,
       });
       if (!courseRes.ok) {
@@ -48,6 +50,7 @@ export function useCourses() {
       const courseData = await courseRes.json();
       console.log('📥 Courses response:', courseData);
       const courses = courseData.courses || [];
+      const now = new Date();
 
       const fetchedCourses = courses.map((course) => ({
         _id: course._id,
@@ -72,7 +75,31 @@ export function useCourses() {
           location: s.location || 'TBD',
         })),
       }));
-      setMyCourses(fetchedCourses);
+      // Debug: Print out endDate and now for each course
+      fetchedCourses.forEach((c) => {
+        if (c.endDate) {
+          const parsed = new Date(c.endDate);
+          console.log('[ARCHIVE DEBUG]', {
+            title: c.title,
+            endDate: c.endDate,
+            parsedEndDate: parsed,
+            now,
+            isArchived: parsed < now,
+          });
+        }
+      });
+      // Split into active and archived
+      setMyCourses(fetchedCourses.filter((c) => !c.endDate || new Date(c.endDate) >= now));
+      setArchivedCourses(
+        fetchedCourses.filter((c) => {
+          if (!c.endDate) return false;
+          // Compare only the date part, ignoring time and timezone
+          const end = new Date(c.endDate);
+          const endDateOnly = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+          const nowDateOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+          return endDateOnly < nowDateOnly;
+        })
+      );
 
       //  Fetch classes
       const classRes = await fetch(`${API_BASE_URL}/v1/classes`, {
@@ -88,6 +115,15 @@ export function useCourses() {
       // Transform classes for the schedule view
       const transformedSchedule = transformClasses(classes, courses);
       setSchedule(transformedSchedule);
+
+      // Past classes: completed sessions (has a date in the past)
+      const today = new Date().toISOString().split('T')[0];
+      const past = classes.filter((cls) => {
+        // Assume class.date is in YYYY-MM-DD format
+        return cls.date && cls.date < today;
+      });
+      setPastClasses(past);
+
       setIsLoading(false);
     } catch (error) {
       console.error('❌ Error fetching data:', error);
@@ -263,5 +299,7 @@ export function useCourses() {
     refreshClasses,
     refreshCourses,
     addCourse,
+    archivedCourses,
+    pastClasses,
   };
 }

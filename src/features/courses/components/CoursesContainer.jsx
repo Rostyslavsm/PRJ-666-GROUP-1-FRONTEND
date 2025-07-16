@@ -5,6 +5,7 @@ import TabsBar from '../../../componentShared/TabsBar';
 import CourseForm from './CourseForm';
 import ClassesList from './ClassesList';
 import CoursesList from './CoursesList';
+import { PastClassesList, ArchivedCoursesList } from '../';
 import { useCourseSubmit, useClassDelete, useCourseDeletion, useCourseEdit } from '../';
 import { useCourses } from '../hooks/useCourses';
 import { secondsToTime, getWeekday, weekdayToIndex } from '../utils/timeUtils';
@@ -13,12 +14,16 @@ import { secondsToTime, getWeekday, weekdayToIndex } from '../utils/timeUtils';
 const TABS = {
   CLASSES: 'classes',
   COURSES: 'courses',
+  PAST_CLASSES: 'pastClasses',
+  ARCHIVED_COURSES: 'archivedCourses',
 };
 
 // Define tab display names
 const TAB_LABELS = {
   [TABS.CLASSES]: 'My Classes',
   [TABS.COURSES]: 'My Courses',
+  [TABS.PAST_CLASSES]: 'Past Classes',
+  [TABS.ARCHIVED_COURSES]: 'Archived Courses',
 };
 
 export default function CoursesContainer() {
@@ -27,8 +32,17 @@ export default function CoursesContainer() {
   const [editData, setEditData] = useState(null);
   const [editIndex, setEditIndex] = useState(null);
 
-  const { myCourses, schedule, isLoading, error, addCourse, refreshClasses, refreshCourses } =
-    useCourses();
+  const {
+    myCourses,
+    schedule,
+    isLoading,
+    error,
+    addCourse,
+    refreshClasses,
+    refreshCourses,
+    archivedCourses,
+    pastClasses,
+  } = useCourses();
 
   const {
     submitCourse,
@@ -274,31 +288,7 @@ export default function CoursesContainer() {
         console.log('✅ Operation successful:', result);
         setShowForm(false);
 
-        if (!editData?._id) {
-          // Only add to UI immediately for new courses
-          addCourse({
-            _id: result.courseId || (result.course && result.course._id) || `temp-${Date.now()}`,
-            title: result.course?.title || courseData.title,
-            code: result.course?.code || courseData.code,
-            section: result.course?.section || courseData.section,
-            professor: result.course?.instructor?.name || courseData.instructor.name,
-            color: result.course?.color || courseData.color,
-            currentGrade: result.course?.currentGrade || {
-              avg: 0,
-              totalWeightSoFar: 0,
-              weightRemaining: 100,
-            },
-            schedule: (result.course?.schedule || courseData.schedule).map((s) => ({
-              time:
-                typeof s.startTime === 'number'
-                  ? `${secondsToTime(s.startTime)}–${secondsToTime(s.endTime)}`
-                  : `${s.startTime}–${s.endTime}`,
-              weekDay: getWeekday(s.weekday),
-            })),
-          });
-        }
-
-        // Refresh data
+        // Always refresh from backend to ensure correct tab placement
         await refreshClasses();
         await refreshCourses();
 
@@ -323,12 +313,15 @@ export default function CoursesContainer() {
           tabs={[
             { id: TABS.CLASSES, label: TAB_LABELS[TABS.CLASSES] },
             { id: TABS.COURSES, label: TAB_LABELS[TABS.COURSES] },
+            { id: TABS.PAST_CLASSES, label: TAB_LABELS[TABS.PAST_CLASSES] },
+            { id: TABS.ARCHIVED_COURSES, label: TAB_LABELS[TABS.ARCHIVED_COURSES] },
           ]}
           activeTab={activeTab}
           onTabChange={handleTabChange}
         />
 
-        {!showForm && (
+        {/* Only show add button on My Courses tab */}
+        {!showForm && activeTab === TABS.COURSES && (
           <div className="add-course-row">
             <button className="button button-primary add-course-button" onClick={handleAdd}>
               + Add Course
@@ -385,6 +378,22 @@ export default function CoursesContainer() {
                   isDeleting={isDeletingCourse}
                 />
               </>
+            )}
+
+            {activeTab === TABS.PAST_CLASSES && (
+              <PastClassesList
+                pastClasses={pastClasses}
+                handleDeleteClass={handleDeleteClass}
+                isDeletingClass={isDeletingClass}
+              />
+            )}
+
+            {activeTab === TABS.ARCHIVED_COURSES && (
+              <ArchivedCoursesList
+                archivedCourses={archivedCourses}
+                handleDelete={handleDeleteCourse}
+                isDeleting={isDeletingCourse}
+              />
             )}
           </div>
         )}
