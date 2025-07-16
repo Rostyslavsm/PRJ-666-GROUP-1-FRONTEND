@@ -41,6 +41,20 @@ export const getProgressColor = (progress) => {
   return '#EF4444'; // Red
 };
 
+export const getWeightColor = (weight) => {
+  if (weight <= 0) return '#ff0000'; // Red at 0%
+  if (weight <= 10) return '#ff3300';
+  if (weight <= 20) return '#ff6600';
+  if (weight <= 30) return '#ff9900';
+  if (weight <= 40) return '#ffcc00';
+  if (weight <= 50) return '#ffff00'; // Yellow at 50%
+  if (weight <= 60) return '#ccff00';
+  if (weight <= 70) return '#99ff00';
+  if (weight <= 80) return '#66ff00';
+  if (weight <= 90) return '#33ff00';
+  return '#00ff00'; // Green above 90%
+};
+
 export const validateGoalForm = (formData, editingId) => {
   const errors = {};
 

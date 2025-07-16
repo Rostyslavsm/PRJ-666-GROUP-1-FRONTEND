@@ -5,6 +5,7 @@ import TabsBar from '@/componentShared/TabsBar';
 import AIChatWindow from '@/componentShared/AIChatWindow';
 import GoalsPage from '@/features/goals/components/GoalsPage';
 import Estimates from '@/features/goals/components/Estimates';
+import GoalReportPage from './Reports';
 
 // Define tab constants
 const TABS = {
@@ -103,10 +104,9 @@ export default function Goals() {
     );
   };
 
-  
   const renderEstimatesContent = () => {
-    return(
-    <div className="bg-white p-6 rounded-lg shadow">
+    return (
+      <div className="bg-white p-6 rounded-lg shadow">
         <h2 className="text-xl font-semibold mb-4">Grade Calculator</h2>
         <p className="text-gray-600 mb-4">Review your current Grade</p>
 
@@ -143,7 +143,7 @@ export default function Goals() {
         </div>
       </div>
     );
-  }
+  };
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -159,7 +159,7 @@ export default function Goals() {
       />
 
       {activeTab === TABS.MY_GOALS && <GoalsPage />}
-      {activeTab === TABS.REPORTS && renderReportsContent()}
+      {activeTab === TABS.REPORTS && <GoalReportPage />}
       {activeTab === TABS.ESTIMATES && <Estimates />}
 
       <AIChatWindow />
