@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Modal from '../../../componentShared/Modal';
 import { LoadingAnimation } from '../../animations';
 import TabsBar from '../../../componentShared/TabsBar';
@@ -31,6 +31,7 @@ export default function CoursesContainer() {
   const [showForm, setShowForm] = useState(false);
   const [editData, setEditData] = useState(null);
   const [editIndex, setEditIndex] = useState(null);
+  const lastRefreshedTab = useRef(null);
 
   const {
     myCourses,
@@ -40,6 +41,8 @@ export default function CoursesContainer() {
     addCourse,
     refreshClasses,
     refreshCourses,
+    refreshPastClasses,
+    testAPIEndpoints,
     archivedCourses,
     pastClasses,
   } = useCourses();
@@ -108,14 +111,29 @@ export default function CoursesContainer() {
 
   // Refresh data when tab changes to ensure we have the latest data
   useEffect(() => {
+    // Only refresh if the tab actually changed
+    if (lastRefreshedTab.current === activeTab) {
+      console.log('🔄 Tab already refreshed, skipping:', activeTab);
+      return;
+    }
+
+    console.log('🔄 Tab changed from', lastRefreshedTab.current, 'to', activeTab);
+    lastRefreshedTab.current = activeTab;
+
     if (activeTab === TABS.CLASSES) {
       console.log('🔄 Tab changed to Classes, refreshing data');
       refreshClasses();
     } else if (activeTab === TABS.COURSES) {
       console.log('🔄 Tab changed to Courses, refreshing data');
       refreshCourses();
+    } else if (activeTab === TABS.PAST_CLASSES) {
+      console.log('🔄 Tab changed to Past Classes, refreshing data');
+      refreshPastClasses();
+    } else if (activeTab === TABS.ARCHIVED_COURSES) {
+      console.log('🔄 Tab changed to Archived Courses, refreshing data');
+      refreshCourses(); // This will refresh both active and archived courses
     }
-  }, [activeTab]);
+  }, [activeTab]); // Remove all dependencies except activeTab
 
   // Add new useEffect for edit success
   useEffect(() => {
@@ -129,6 +147,23 @@ export default function CoursesContainer() {
   const handleTabChange = (tab) => {
     setActiveTab(tab);
     setShowForm(false);
+  };
+
+  // Manual refresh functions for debug buttons
+  const handleManualRefresh = (tabType) => {
+    console.log('🔄 Manual refresh triggered for:', tabType);
+    if (tabType === 'archived') {
+      refreshCourses();
+    } else if (tabType === 'pastClasses') {
+      refreshPastClasses();
+    }
+  };
+
+  // Test function to verify no infinite loop
+  const testNoLoop = () => {
+    console.log('🧪 Test: No infinite loop detected');
+    console.log('🧪 Current tab:', activeTab);
+    console.log('🧪 Last refreshed tab:', lastRefreshedTab.current);
   };
 
   function handleAdd() {

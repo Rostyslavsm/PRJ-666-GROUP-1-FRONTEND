@@ -26,7 +26,7 @@ export default function ArchivedCoursesList({ archivedCourses, handleDelete, isD
   }
 
   return (
-    <div className="archived-courses-list">
+    <div className="courses-list">
       {archivedCourses.map((course) => (
         <CourseCard
           key={course._id}

@@ -21,9 +21,6 @@ export default function CoursesList({ courses, handleAdd, handleEdit, handleDele
     return (
       <div className="empty-state">
         <p className="empty-state-message">You haven't added any courses yet.</p>
-        <button className="add-course-button" onClick={handleAdd}>
-          + Add Course
-        </button>
       </div>
     );
   }

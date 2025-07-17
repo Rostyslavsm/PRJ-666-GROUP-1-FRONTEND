@@ -26,35 +26,36 @@ export default function PastClassesList({ pastClasses, handleDeleteClass, isDele
   }
 
   return (
-    <>
-      <div className="past-classes-list">
-        {pastClasses.map((cls, idx) => {
-          // Compose a course-like object for CourseCard
-          const courseData = {
-            _id: cls._id,
-            title: cls.title || cls.code,
-            code: cls.code,
-            color: cls.color,
-            professor: cls.professor,
-            section: cls.section,
-            schedule: [
-              {
-                weekDay: cls.date,
-                time: `${cls.startTime || cls.from} - ${cls.endTime || cls.until}`,
-              },
-            ],
-            room: cls.location || cls.room,
-          };
-          return (
-            <CourseCard
-              key={cls._id || idx}
-              course={courseData}
-              onDelete={() => handleDeleteClick(cls._id, courseData)}
-              isDeleting={isDeletingClass}
-            />
-          );
-        })}
-      </div>
+    <div className="courses-list">
+      {pastClasses.map((cls, idx) => {
+        // Compose a course-like object for CourseCard using the transformed data
+        const courseData = {
+          _id: cls._id,
+          title: cls.title,
+          code: cls.code,
+          color: cls.color,
+          professor: cls.professor,
+          section: cls.section,
+          schedule: [
+            {
+              weekDay: cls.date,
+              time: `${cls.startTime} - ${cls.endTime}`,
+              classType: cls.classType,
+              location: cls.location,
+            },
+          ],
+          room: cls.location,
+          topics: cls.topics,
+        };
+        return (
+          <CourseCard
+            key={cls._id || idx}
+            course={courseData}
+            onDelete={() => handleDeleteClick(cls._id, courseData)}
+            isDeleting={isDeletingClass}
+          />
+        );
+      })}
       <ConfirmationModal
         isOpen={isConfirmationOpen}
         onClose={closeConfirmation}
@@ -64,6 +65,6 @@ export default function PastClassesList({ pastClasses, handleDeleteClass, isDele
         cancelText={confirmationData.cancelText}
         onConfirm={confirmationData.onConfirm}
       />
-    </>
+    </div>
   );
 }
