@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Modal from '../../../componentShared/Modal';
 import { LoadingAnimation } from '../../animations';
 import TabsBar from '../../../componentShared/TabsBar';
 import CourseForm from './CourseForm';
 import ClassesList from './ClassesList';
 import CoursesList from './CoursesList';
+import { PastClassesList, ArchivedCoursesList } from '../';
 import { useCourseSubmit, useClassDelete, useCourseDeletion, useCourseEdit } from '../';
 import { useCourses } from '../hooks/useCourses';
 import { secondsToTime, getWeekday, weekdayToIndex } from '../utils/timeUtils';
@@ -13,12 +14,16 @@ import { secondsToTime, getWeekday, weekdayToIndex } from '../utils/timeUtils';
 const TABS = {
   CLASSES: 'classes',
   COURSES: 'courses',
+  PAST_CLASSES: 'pastClasses',
+  ARCHIVED_COURSES: 'archivedCourses',
 };
 
 // Define tab display names
 const TAB_LABELS = {
   [TABS.CLASSES]: 'My Classes',
   [TABS.COURSES]: 'My Courses',
+  [TABS.PAST_CLASSES]: 'Past Classes',
+  [TABS.ARCHIVED_COURSES]: 'Archived Courses',
 };
 
 export default function CoursesContainer() {
@@ -26,9 +31,21 @@ export default function CoursesContainer() {
   const [showForm, setShowForm] = useState(false);
   const [editData, setEditData] = useState(null);
   const [editIndex, setEditIndex] = useState(null);
+  const lastRefreshedTab = useRef(null);
 
-  const { myCourses, schedule, isLoading, error, addCourse, refreshClasses, refreshCourses } =
-    useCourses();
+  const {
+    myCourses,
+    schedule,
+    isLoading,
+    error,
+    addCourse,
+    refreshClasses,
+    refreshCourses,
+    refreshPastClasses,
+    testAPIEndpoints,
+    archivedCourses,
+    pastClasses,
+  } = useCourses();
 
   const {
     submitCourse,
@@ -94,14 +111,29 @@ export default function CoursesContainer() {
 
   // Refresh data when tab changes to ensure we have the latest data
   useEffect(() => {
+    // Only refresh if the tab actually changed
+    if (lastRefreshedTab.current === activeTab) {
+      console.log('🔄 Tab already refreshed, skipping:', activeTab);
+      return;
+    }
+
+    console.log('🔄 Tab changed from', lastRefreshedTab.current, 'to', activeTab);
+    lastRefreshedTab.current = activeTab;
+
     if (activeTab === TABS.CLASSES) {
       console.log('🔄 Tab changed to Classes, refreshing data');
       refreshClasses();
     } else if (activeTab === TABS.COURSES) {
       console.log('🔄 Tab changed to Courses, refreshing data');
       refreshCourses();
+    } else if (activeTab === TABS.PAST_CLASSES) {
+      console.log('🔄 Tab changed to Past Classes, refreshing data');
+      refreshPastClasses();
+    } else if (activeTab === TABS.ARCHIVED_COURSES) {
+      console.log('🔄 Tab changed to Archived Courses, refreshing data');
+      refreshCourses(); // This will refresh both active and archived courses
     }
-  }, [activeTab]);
+  }, [activeTab]); // Remove all dependencies except activeTab
 
   // Add new useEffect for edit success
   useEffect(() => {
@@ -115,6 +147,23 @@ export default function CoursesContainer() {
   const handleTabChange = (tab) => {
     setActiveTab(tab);
     setShowForm(false);
+  };
+
+  // Manual refresh functions for debug buttons
+  const handleManualRefresh = (tabType) => {
+    console.log('🔄 Manual refresh triggered for:', tabType);
+    if (tabType === 'archived') {
+      refreshCourses();
+    } else if (tabType === 'pastClasses') {
+      refreshPastClasses();
+    }
+  };
+
+  // Test function to verify no infinite loop
+  const testNoLoop = () => {
+    console.log('🧪 Test: No infinite loop detected');
+    console.log('🧪 Current tab:', activeTab);
+    console.log('🧪 Last refreshed tab:', lastRefreshedTab.current);
   };
 
   function handleAdd() {
@@ -274,31 +323,7 @@ export default function CoursesContainer() {
         console.log('✅ Operation successful:', result);
         setShowForm(false);
 
-        if (!editData?._id) {
-          // Only add to UI immediately for new courses
-          addCourse({
-            _id: result.courseId || (result.course && result.course._id) || `temp-${Date.now()}`,
-            title: result.course?.title || courseData.title,
-            code: result.course?.code || courseData.code,
-            section: result.course?.section || courseData.section,
-            professor: result.course?.instructor?.name || courseData.instructor.name,
-            color: result.course?.color || courseData.color,
-            currentGrade: result.course?.currentGrade || {
-              avg: 0,
-              totalWeightSoFar: 0,
-              weightRemaining: 100,
-            },
-            schedule: (result.course?.schedule || courseData.schedule).map((s) => ({
-              time:
-                typeof s.startTime === 'number'
-                  ? `${secondsToTime(s.startTime)}–${secondsToTime(s.endTime)}`
-                  : `${s.startTime}–${s.endTime}`,
-              weekDay: getWeekday(s.weekday),
-            })),
-          });
-        }
-
-        // Refresh data
+        // Always refresh from backend to ensure correct tab placement
         await refreshClasses();
         await refreshCourses();
 
@@ -323,12 +348,15 @@ export default function CoursesContainer() {
           tabs={[
             { id: TABS.CLASSES, label: TAB_LABELS[TABS.CLASSES] },
             { id: TABS.COURSES, label: TAB_LABELS[TABS.COURSES] },
+            { id: TABS.PAST_CLASSES, label: TAB_LABELS[TABS.PAST_CLASSES] },
+            { id: TABS.ARCHIVED_COURSES, label: TAB_LABELS[TABS.ARCHIVED_COURSES] },
           ]}
           activeTab={activeTab}
           onTabChange={handleTabChange}
         />
 
-        {!showForm && (
+        {/* Only show add button on My Courses tab */}
+        {!showForm && activeTab === TABS.COURSES && (
           <div className="add-course-row">
             <button className="button button-primary add-course-button" onClick={handleAdd}>
               + Add Course
@@ -385,6 +413,22 @@ export default function CoursesContainer() {
                   isDeleting={isDeletingCourse}
                 />
               </>
+            )}
+
+            {activeTab === TABS.PAST_CLASSES && (
+              <PastClassesList
+                pastClasses={pastClasses}
+                handleDeleteClass={handleDeleteClass}
+                isDeletingClass={isDeletingClass}
+              />
+            )}
+
+            {activeTab === TABS.ARCHIVED_COURSES && (
+              <ArchivedCoursesList
+                archivedCourses={archivedCourses}
+                handleDelete={handleDeleteCourse}
+                isDeleting={isDeletingCourse}
+              />
             )}
           </div>
         )}

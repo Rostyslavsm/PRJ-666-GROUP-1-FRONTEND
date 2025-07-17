@@ -3,41 +3,38 @@ import ConfirmationModal from '../../../componentShared/ConfirmationModal';
 import { useConfirmation } from '../../../componentShared/useConfirmation';
 import CourseCard from '../../../componentShared/CourseCard';
 
-export default function CoursesList({ courses, handleAdd, handleEdit, handleDelete, isDeleting }) {
+export default function ArchivedCoursesList({ archivedCourses, handleDelete, isDeleting }) {
   const { isConfirmationOpen, confirmationData, openConfirmation, closeConfirmation } =
     useConfirmation();
 
   const handleDeleteClick = (course) => {
     openConfirmation({
-      title: 'Delete Course',
-      message: `Are you sure you want to delete the course "${course.title}" (${course.code})? This will also delete all associated classes and assignments. This action cannot be undone.`,
+      title: 'Delete Archived Course',
+      message: `Are you sure you want to delete the archived course "${course.title}" (${course.code})? This will also delete all associated classes and assignments. This action cannot be undone.`,
       onConfirm: () => handleDelete(course._id),
       confirmText: 'Delete Course',
       cancelText: 'Cancel',
     });
   };
 
-  if (courses.length === 0) {
+  if (!archivedCourses || archivedCourses.length === 0) {
     return (
       <div className="empty-state">
-        <p className="empty-state-message">You haven't added any courses yet.</p>
+        <p className="empty-state-message">You have no archived courses.</p>
       </div>
     );
   }
 
   return (
     <div className="courses-list">
-      {courses.map((course) => (
+      {archivedCourses.map((course) => (
         <CourseCard
           key={course._id}
           course={course}
-          onEdit={handleEdit}
-          onDelete={handleDeleteClick}
+          onDelete={() => handleDeleteClick(course)}
           isDeleting={isDeleting}
         />
       ))}
-
-      {/* Confirmation Modal */}
       <ConfirmationModal
         isOpen={isConfirmationOpen}
         onClose={closeConfirmation}

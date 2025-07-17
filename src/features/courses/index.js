@@ -15,6 +15,8 @@ export { default as CoursesContainer } from './components/CoursesContainer';
 export { default as CourseForm } from './components/CourseForm';
 export { default as CoursesList } from './components/CoursesList';
 export { default as ClassesList } from './components/ClassesList';
+export { default as PastClassesList } from './components/PastClassesList';
+export { default as ArchivedCoursesList } from './components/ArchivedCoursesList';
 
 // Utilities
 export {
