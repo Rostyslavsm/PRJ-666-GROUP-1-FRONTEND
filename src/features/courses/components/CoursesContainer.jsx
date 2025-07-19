@@ -95,10 +95,12 @@ export default function CoursesContainer() {
   useEffect(() => {
     if (deleteClassSuccess) {
       refreshClasses();
+      // Also refresh past classes since deleting a class affects both current and past classes
+      refreshPastClasses();
       // Reset the success state after refreshing to prevent multiple refreshes
       resetClassDeleteState();
     }
-  }, [deleteClassSuccess, refreshClasses, resetClassDeleteState]);
+  }, [deleteClassSuccess, refreshClasses, refreshPastClasses, resetClassDeleteState]);
 
   // Refresh course data when a course is deleted successfully
   useEffect(() => {
