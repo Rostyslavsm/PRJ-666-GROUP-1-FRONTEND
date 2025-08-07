@@ -105,29 +105,6 @@ const TipsHome = () => {
 
             <div className="tips-summary-content">
               <div className="tips-summary-section">
-                <h4>Focus Areas</h4>
-                <ul className="tips-summary-list">
-                  {studySummary.focusAreas?.map((area, index) => (
-                    <li key={index}>
-                      <ReactMarkdown>{area}</ReactMarkdown>
-                    </li>
-                  )) || <li>No focus areas available</li>}
-                </ul>
-              </div>
-
-              <div className="tips-summary-section">
-                <h4>Recommended Study Schedule</h4>
-                <ul className="tips-summary-list">
-                  {studySummary.recommendedSchedule?.map((item, index) => (
-                    <li key={index}>
-                      <ReactMarkdown>{item}</ReactMarkdown>
-                    </li>
-                  )) || <li>No schedule recommendations available</li>}
-                </ul>
-              </div>
-
-              <div className="tips-summary-section">
-                <h4>Study Recommendations</h4>
                 <div className="tips-summary-text">
                   {studySummary.tips ? (
                     <div className="markdown-content">

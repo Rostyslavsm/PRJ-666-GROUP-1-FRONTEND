@@ -385,6 +385,11 @@
   margin-bottom: 1rem;
 }
 
+.markdown-content strong {
+  color: #52796f;
+  font-weight: 600;
+}
+
 .markdown-content ul,
 .markdown-content ol {
   margin-bottom: 1rem;
@@ -461,7 +466,7 @@
 }
 
 .tips-summary-text strong {
-  color: #2f3e46;
+  color: #52796f;
   font-weight: 600;
 }
 
