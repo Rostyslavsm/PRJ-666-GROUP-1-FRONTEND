@@ -101,8 +101,6 @@ const TipsHome = () => {
 
         {studySummary && !isLoading && (
           <div className="tips-summary slide-up-appear">
-            <h3>Your Personalized Study Summary</h3>
-
             <div className="tips-summary-content">
               <div className="tips-summary-section">
                 <div className="tips-summary-text">
