@@ -4,7 +4,7 @@
 
 /**
  * Builds query parameters for classes filtering
- * @param {Object} filters - The filter object containing courseId, date (course start date), professor, room
+ * @param {Object} filters - The filter object containing courseId, date (course start date), professor
  * @returns {URLSearchParams} - URLSearchParams object with the query parameters
  */
 export function buildClassesQueryParams(filters = {}) {
@@ -59,10 +59,6 @@ export function buildClassesQueryParams(filters = {}) {
 
   if (filters.professor && filters.professor.trim()) {
     queryParams.append('professor', filters.professor.trim());
-  }
-
-  if (filters.room && filters.room.trim()) {
-    queryParams.append('room', filters.room.trim());
   }
 
   return queryParams;
@@ -161,6 +157,5 @@ export function createDefaultFilters() {
     courseId: '',
     date: '',
     professor: '',
-    room: '',
   };
 }

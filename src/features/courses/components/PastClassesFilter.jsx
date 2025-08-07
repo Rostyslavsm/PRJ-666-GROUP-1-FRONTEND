@@ -150,21 +150,6 @@ export default function PastClassesFilter({
               className="filter-input"
             />
           </div>
-
-          <div className="filter-group">
-            <label htmlFor="room-filter" className="filter-label">
-              Room
-            </label>
-            <input
-              type="text"
-              id="room-filter"
-              name="room"
-              placeholder="e.g., Room 101"
-              value={localFilters.room}
-              onChange={handleInputChange}
-              className="filter-input"
-            />
-          </div>
         </div>
 
         <div className="filter-actions">
