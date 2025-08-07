@@ -1,18 +1,23 @@
 /**
- * Utility functions for handling past classes filtering
+ * Utility functions for handling classes filtering
  */
 
 /**
- * Builds query parameters for past classes filtering
+ * Builds query parameters for classes filtering
  * @param {Object} filters - The filter object containing courseId, date (course start date), professor, room
  * @returns {URLSearchParams} - URLSearchParams object with the query parameters
  */
-export function buildPastClassesQueryParams(filters = {}) {
+export function buildClassesQueryParams(filters = {}) {
   const queryParams = new URLSearchParams();
 
-  // Always include these base parameters
-  queryParams.append('past', 'true');
+  // Always include course expansion
   queryParams.append('expand', 'course');
+
+  // Only add past=true if no date filter is provided
+  // If date filter is provided, we want classes in that specific date range
+  if (!filters.date || !filters.date.trim()) {
+    queryParams.append('past', 'true');
+  }
 
   // Add filter parameters if provided and not empty
   if (filters.courseId && filters.courseId.trim()) {

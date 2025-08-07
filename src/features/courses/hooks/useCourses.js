@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Auth } from '../../../features/auth/lib/amplifyClient';
 import { secondsToTime, getWeekday } from '../utils/timeUtils';
 import { transformClasses } from '../utils/classUtils';
-import { buildPastClassesQueryParams, validateFilters } from '../utils/filterUtils';
+import { buildClassesQueryParams, validateFilters } from '../utils/filterUtils';
 
 export function useCourses() {
   const [myCourses, setMyCourses] = useState([]);
@@ -491,7 +491,7 @@ export function useCourses() {
       }
 
       // Build query parameters using utility function
-      const queryParams = buildPastClassesQueryParams(filters);
+      const queryParams = buildClassesQueryParams(filters);
       const queryString = queryParams.toString();
       const url = `${API_BASE_URL}/v1/classes?${queryString}`;
 
