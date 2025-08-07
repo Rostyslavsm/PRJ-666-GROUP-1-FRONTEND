@@ -41,14 +41,13 @@ export default function ProfileStats() {
     const loadGoals = async () => {
       try {
         setGoalsLoading(true);
-        const response = await fetchGoals(true); // Expand courses
-
-        // Transform API response to chart format
+        const response = await fetchGoals(true);
         const transformedData = response.map((goal) => {
-          const actual = goal.course?.currentGrade.avg || 0;
-          const expected = goal.targetGrade || 0;
-          console.log('goal course is ', goal.course.code);
+          // Safely get current grade average with null checks
 
+          const actual = goal.course?.currentGrade?.avg || 0;
+          const expected = goal.targetGrade || 0;
+          console.log('goal message ', actual || 0);
           return {
             course: goal.course?.code || 'Unknown',
             actual: parseFloat(actual.toFixed(1)),
@@ -59,7 +58,7 @@ export default function ProfileStats() {
         setGoalsData(transformedData);
       } catch (error) {
         console.error('Error loading goals:', error);
-        setGoalsData([]); // Set empty array to show error state
+        setGoalsData([]);
       } finally {
         setGoalsLoading(false);
       }
