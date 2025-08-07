@@ -29,10 +29,9 @@ export default function PastClassesList({
     if (filtersApplied) {
       return (
         <div className="filter-results-count">
-          {pastClasses.length === 0 
+          {pastClasses.length === 0
             ? 'No classes found matching your filters'
-            : `${pastClasses.length} class${pastClasses.length === 1 ? '' : 'es'} found`
-          }
+            : `${pastClasses.length} class${pastClasses.length === 1 ? '' : 'es'} found`}
         </div>
       );
     }
