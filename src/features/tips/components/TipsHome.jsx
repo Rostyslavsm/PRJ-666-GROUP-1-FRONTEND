@@ -130,7 +130,9 @@ const TipsHome = () => {
                 <h4>Study Recommendations</h4>
                 <div className="tips-summary-text">
                   {studySummary.tips ? (
-                    <ReactMarkdown className="markdown-content">{studySummary.tips}</ReactMarkdown>
+                    <div className="markdown-content">
+                      <ReactMarkdown>{studySummary.tips}</ReactMarkdown>
+                    </div>
                   ) : (
                     <p>No tips available</p>
                   )}
