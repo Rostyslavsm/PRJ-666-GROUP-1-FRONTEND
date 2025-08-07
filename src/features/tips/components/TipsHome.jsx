@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTips } from '../hooks/useTips';
 import Lottie from 'lottie-react';
+import ReactMarkdown from 'react-markdown';
 import loadingAnimation from '../../../assets/animations/loading.json';
 
 const TipsHome = () => {
@@ -106,9 +107,11 @@ const TipsHome = () => {
               <div className="tips-summary-section">
                 <h4>Focus Areas</h4>
                 <ul className="tips-summary-list">
-                  {studySummary.focusAreas?.map((area, index) => <li key={index}>{area}</li>) || (
-                    <li>No focus areas available</li>
-                  )}
+                  {studySummary.focusAreas?.map((area, index) => (
+                    <li key={index}>
+                      <ReactMarkdown>{area}</ReactMarkdown>
+                    </li>
+                  )) || <li>No focus areas available</li>}
                 </ul>
               </div>
 
@@ -116,7 +119,9 @@ const TipsHome = () => {
                 <h4>Recommended Study Schedule</h4>
                 <ul className="tips-summary-list">
                   {studySummary.recommendedSchedule?.map((item, index) => (
-                    <li key={index}>{item}</li>
+                    <li key={index}>
+                      <ReactMarkdown>{item}</ReactMarkdown>
+                    </li>
                   )) || <li>No schedule recommendations available</li>}
                 </ul>
               </div>
@@ -125,7 +130,9 @@ const TipsHome = () => {
                 <h4>Study Recommendations</h4>
                 <div className="tips-summary-text">
                   {studySummary.tips ? (
-                    <p style={{ whiteSpace: 'pre-line' }}>{studySummary.tips}</p>
+                    <div className="markdown-content">
+                      <ReactMarkdown>{studySummary.tips}</ReactMarkdown>
+                    </div>
                   ) : (
                     <p>No tips available</p>
                   )}
