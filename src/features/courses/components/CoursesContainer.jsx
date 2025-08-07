@@ -6,9 +6,11 @@ import CourseForm from './CourseForm';
 import ClassesList from './ClassesList';
 import CoursesList from './CoursesList';
 import { PastClassesList, ArchivedCoursesList } from '../';
+import PastClassesFilter from './PastClassesFilter';
 import { useCourseSubmit, useClassDelete, useCourseDeletion, useCourseEdit } from '../';
 import { useCourses } from '../hooks/useCourses';
 import { secondsToTime, getWeekday, weekdayToIndex } from '../utils/timeUtils';
+import { createDefaultFilters, hasActiveFilters } from '../utils/filterUtils';
 
 // Define tab constants for better readability
 const TABS = {
@@ -32,6 +34,9 @@ export default function CoursesContainer() {
   const [editData, setEditData] = useState(null);
   const [editIndex, setEditIndex] = useState(null);
   const lastRefreshedTab = useRef(null);
+
+  // State holds the filters that have been *applied* for the Past Classes tab.
+  const [activePastClassesFilters, setActivePastClassesFilters] = useState(createDefaultFilters());
 
   const {
     myCourses,
@@ -96,11 +101,17 @@ export default function CoursesContainer() {
     if (deleteClassSuccess) {
       refreshClasses();
       // Also refresh past classes since deleting a class affects both current and past classes
-      refreshPastClasses();
+      refreshPastClasses(activePastClassesFilters); // Pass applied filters on refresh
       // Reset the success state after refreshing to prevent multiple refreshes
       resetClassDeleteState();
     }
-  }, [deleteClassSuccess, refreshClasses, refreshPastClasses, resetClassDeleteState]);
+  }, [
+    deleteClassSuccess,
+    refreshClasses,
+    refreshPastClasses,
+    resetClassDeleteState,
+    activePastClassesFilters,
+  ]);
 
   // Refresh course data when a course is deleted successfully
   useEffect(() => {
@@ -115,27 +126,21 @@ export default function CoursesContainer() {
   useEffect(() => {
     // Only refresh if the tab actually changed
     if (lastRefreshedTab.current === activeTab) {
-      console.log('🔄 Tab already refreshed, skipping:', activeTab);
       return;
     }
-
-    console.log('🔄 Tab changed from', lastRefreshedTab.current, 'to', activeTab);
     lastRefreshedTab.current = activeTab;
 
     if (activeTab === TABS.CLASSES) {
-      console.log('🔄 Tab changed to Classes, refreshing data');
       refreshClasses();
     } else if (activeTab === TABS.COURSES) {
-      console.log('🔄 Tab changed to Courses, refreshing data');
       refreshCourses();
     } else if (activeTab === TABS.PAST_CLASSES) {
-      console.log('🔄 Tab changed to Past Classes, refreshing data');
-      refreshPastClasses();
+      refreshCourses(); // Fetch courses for the filter dropdown
+      refreshPastClasses(activePastClassesFilters); // Then fetch past classes with any active filters
     } else if (activeTab === TABS.ARCHIVED_COURSES) {
-      console.log('🔄 Tab changed to Archived Courses, refreshing data');
       refreshCourses(); // This will refresh both active and archived courses
     }
-  }, [activeTab]); // Remove all dependencies except activeTab
+  }, [activeTab, refreshClasses, refreshCourses, refreshPastClasses, activePastClassesFilters]);
 
   // Add new useEffect for edit success
   useEffect(() => {
@@ -149,6 +154,21 @@ export default function CoursesContainer() {
   const handleTabChange = (tab) => {
     setActiveTab(tab);
     setShowForm(false);
+  };
+
+  // Called when the "Apply Filters" button is clicked in the filter component.
+  const handleApplyPastClassesFilters = (filters) => {
+    console.log('🔍 Applying past classes filters:', filters);
+    setActivePastClassesFilters(filters);
+    refreshPastClasses(filters);
+  };
+
+  // Called when the "Clear Filters" button is clicked.
+  const handleClearPastClassesFilters = () => {
+    console.log('🔍 Clearing past classes filters');
+    const clearedFilters = createDefaultFilters();
+    setActivePastClassesFilters(clearedFilters);
+    refreshPastClasses(clearedFilters);
   };
 
   // Manual refresh functions for debug buttons
@@ -418,11 +438,20 @@ export default function CoursesContainer() {
             )}
 
             {activeTab === TABS.PAST_CLASSES && (
-              <PastClassesList
-                pastClasses={pastClasses}
-                handleDeleteClass={handleDeleteClass}
-                isDeletingClass={isDeletingClass}
-              />
+              <div className="past-classes-view">
+                <PastClassesFilter
+                  courses={myCourses}
+                  activeFilters={activePastClassesFilters}
+                  onApplyFilters={handleApplyPastClassesFilters}
+                  onClearFilters={handleClearPastClassesFilters}
+                />
+                <PastClassesList
+                  pastClasses={pastClasses}
+                  handleDeleteClass={handleDeleteClass}
+                  isDeletingClass={isDeletingClass}
+                  filtersApplied={hasActiveFilters(activePastClassesFilters)}
+                />
+              </div>
             )}
 
             {activeTab === TABS.ARCHIVED_COURSES && (

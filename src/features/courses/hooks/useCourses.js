@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Auth } from '../../../features/auth/lib/amplifyClient';
 import { secondsToTime, getWeekday } from '../utils/timeUtils';
 import { transformClasses } from '../utils/classUtils';
+import { buildPastClassesQueryParams, validateFilters } from '../utils/filterUtils';
 
 export function useCourses() {
   const [myCourses, setMyCourses] = useState([]);
@@ -189,6 +190,21 @@ export function useCourses() {
         const startTime = new Date(cls.startTime);
         const endTime = new Date(cls.endTime);
 
+        // Get course start date for filtering
+        const courseStartDate = courseInfo.startDate ? new Date(courseInfo.startDate) : null;
+
+        // Debug: Log course start date information
+        if (filters.date) {
+          console.log('🔍 Course start date debug:', {
+            courseTitle: courseInfo.title,
+            courseStartDate: courseInfo.startDate,
+            parsedCourseStartDate: courseStartDate,
+            filterDate: filters.date,
+            matches:
+              courseStartDate && courseStartDate.toISOString().split('T')[0] === filters.date,
+          });
+        }
+
         return {
           _id: cls._id,
           title: courseInfo.title || 'Unknown Course',
@@ -196,11 +212,22 @@ export function useCourses() {
           color: courseInfo.color || '#cad2c5',
           professor: courseInfo.instructor?.name || 'Unknown',
           section: courseInfo.section || 'A',
+          // Store both formatted and raw date for better filtering
           date: startTime.toLocaleDateString('en-US', {
             weekday: 'long',
             month: '2-digit',
             day: '2-digit',
           }),
+          rawDate: startTime.toISOString().split('T')[0], // YYYY-MM-DD format for filtering
+          // Add course start date for filtering
+          courseStartDate: courseStartDate
+            ? courseStartDate.toLocaleDateString('en-US', {
+                weekday: 'long',
+                month: '2-digit',
+                day: '2-digit',
+              })
+            : 'Unknown',
+          courseStartDateRaw: courseStartDate ? courseStartDate.toISOString().split('T')[0] : null,
           startTime: startTime.toLocaleTimeString([], {
             hour: '2-digit',
             minute: '2-digit',
@@ -434,10 +461,18 @@ export function useCourses() {
   };
 
   // Refresh past classes data
-  const refreshPastClasses = async () => {
+  const refreshPastClasses = async (filters = {}) => {
     try {
-      console.log('🔄 Starting past classes refresh');
+      console.log('🔄 Starting past classes refresh with filters:', filters);
       const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+
+      // Validate filters before making the request
+      const validation = validateFilters(filters);
+      if (!validation.isValid) {
+        console.warn('Invalid filters detected:', validation.errors);
+        // Continue with empty filters if validation fails
+        filters = {};
+      }
 
       let headers;
       // In development mode, use mock headers
@@ -455,8 +490,17 @@ export function useCourses() {
         headers = user.authorizationHeaders();
       }
 
-      // Fetch past classes with course expansion
-      const pastClassesRes = await fetch(`${API_BASE_URL}/v1/classes?past=true&expand=course`, {
+      // Build query parameters using utility function
+      const queryParams = buildPastClassesQueryParams(filters);
+      const queryString = queryParams.toString();
+      const url = `${API_BASE_URL}/v1/classes?${queryString}`;
+
+      console.log('🔄 Fetching past classes from URL:', url);
+      console.log('🔄 Query parameters:', queryString);
+      console.log('🔄 Applied filters:', filters);
+
+      // Fetch past classes with course expansion and filters
+      const pastClassesRes = await fetch(url, {
         headers,
       });
       if (!pastClassesRes.ok) {
@@ -479,11 +523,13 @@ export function useCourses() {
           color: courseInfo.color || '#cad2c5',
           professor: courseInfo.instructor?.name || 'Unknown',
           section: courseInfo.section || 'A',
+          // Store both formatted and raw date for better filtering
           date: startTime.toLocaleDateString('en-US', {
             weekday: 'long',
             month: '2-digit',
             day: '2-digit',
           }),
+          rawDate: startTime.toISOString().split('T')[0], // YYYY-MM-DD format for filtering
           startTime: startTime.toLocaleTimeString([], {
             hour: '2-digit',
             minute: '2-digit',
@@ -499,7 +545,11 @@ export function useCourses() {
       });
 
       setPastClasses(transformedPastClasses);
-      console.log('🔄 Past classes refresh complete');
+      console.log(
+        '🔄 Past classes refresh complete with',
+        transformedPastClasses.length,
+        'classes'
+      );
     } catch (err) {
       console.error('Failed to refresh past classes:', err.message);
     }
