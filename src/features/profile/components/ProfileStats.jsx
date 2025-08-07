@@ -214,7 +214,17 @@ export default function ProfileStats() {
                         fontWeight="bold"
                         fontSize="7px"
                       />
-                      <YAxis domain={[0, 100]} tick={{ fontSize: 10 }} width={20} />
+                      <YAxis
+                        domain={[0, 100]}
+                        ticks={[0, 25, 50, 75, 100]}
+                        tick={{
+                          fontSize: 12,
+                          fill: '#333',
+                          fontWeight: 'bold',
+                        }}
+                        width={40}
+                        tickFormatter={(value) => `${value}%`}
+                      />
                       <Tooltip
                         formatter={(value, name) => {
                           return [`${value}%`, name];
@@ -225,9 +235,7 @@ export default function ProfileStats() {
                           boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
                         }}
                       />
-
                       <Legend wrapperStyle={{ fontSize: '10px', paddingTop: '12px' }} />
-
                       <Bar
                         dataKey="actual"
                         fill="#2E86DE"
