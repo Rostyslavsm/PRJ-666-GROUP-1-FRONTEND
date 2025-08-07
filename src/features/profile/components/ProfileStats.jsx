@@ -238,13 +238,13 @@ export default function ProfileStats() {
                       <Legend wrapperStyle={{ fontSize: '10px', paddingTop: '12px' }} />
                       <Bar
                         dataKey="actual"
-                        fill="#2E86DE"
+                        fill="#52796F"
                         name="Current Grade"
                         radius={[4, 4, 0, 0]}
                       />
                       <Bar
                         dataKey="expected"
-                        fill="#E74C3C"
+                        fill="#a72f38"
                         name="Target Grade"
                         radius={[4, 4, 0, 0]}
                       />
