@@ -1,8 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
 import { useProfile } from '../hooks/useProfile';
+import { fetchGoals } from '@/features/goals/services/goalService'; // Import the fetchGoals function
 import LoadingAnimation from '../../animations/LoadingAnimation';
 import { motion } from 'framer-motion';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from 'recharts';
 
 const Card = ({ className, children, ...props }) => {
   return (
@@ -17,12 +27,46 @@ const CardContent = ({ className, children }) => {
 };
 
 export default function ProfileStats() {
-  const { isLoading, upcomingEvent, completionPercentage, hasEvents, formatEventDate } =
-    useProfile();
+  const { isLoading, upcomingEvent, completionPercentage = 0, formatEventDate } = useProfile();
 
-  // Add state for animated percentage
   const [animatedPercentage, setAnimatedPercentage] = useState(0);
-  const [animatedOffset, setAnimatedOffset] = useState(283); // Starting with full offset (empty circle)
+  const [animatedOffset, setAnimatedOffset] = useState(283);
+  const [goalsData, setGoalsData] = useState([]);
+  const [goalsLoading, setGoalsLoading] = useState(true);
+  const [delayDone, setDelayDone] = useState(false);
+
+  !delayDone && setTimeout(() => setDelayDone(true), 4000);
+
+  useEffect(() => {
+    const loadGoals = async () => {
+      try {
+        setGoalsLoading(true);
+        const response = await fetchGoals(true); // Expand courses
+
+        // Transform API response to chart format
+        const transformedData = response.map((goal) => {
+          const actual = goal.course?.currentGrade.avg || 0;
+          const expected = goal.targetGrade || 0;
+          console.log('goal course is ', goal.course.code);
+
+          return {
+            course: goal.course?.code || 'Unknown',
+            actual: parseFloat(actual.toFixed(1)),
+            expected: parseFloat(expected.toFixed(1)),
+          };
+        });
+
+        setGoalsData(transformedData);
+      } catch (error) {
+        console.error('Error loading goals:', error);
+        setGoalsData([]); // Set empty array to show error state
+      } finally {
+        setGoalsLoading(false);
+      }
+    };
+
+    loadGoals();
+  }, []);
 
   // Animation effect
   useEffect(() => {
@@ -133,7 +177,7 @@ export default function ProfileStats() {
         </CardContent>
       </Card>
 
-      {/* Goal Progress - Slide in from right */}
+      {/* goal progress */}
       <Card
         className="profile-card"
         initial={{ x: 100, opacity: 0 }}
@@ -142,21 +186,94 @@ export default function ProfileStats() {
       >
         <CardContent className="profile-card-content">
           <div className="profile-card-header">Goal Progress</div>
-          {isLoading ? (
-            <div className="profile-goals-content flex justify-center items-center py-4">
+
+          {goalsLoading && isLoading ? (
+            <div className="flex justify-center items-center py-4" style={{ height: 220 }}>
               <LoadingAnimation size="small" />
             </div>
+          ) : goalsData && goalsData.length > 0 ? (
+            <div className="profile-goals-chart-container">
+              {!delayDone ? (
+                <div className="flex justify-center items-center py-4" style={{ height: 220 }}>
+                  <LoadingAnimation size="small" />
+                </div>
+              ) : (
+                <>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart
+                      data={goalsData}
+                      margin={{ top: 10, right: 10, left: 0, bottom: 5 }}
+                      barSize={20}
+                      barCategoryGap={20}
+                      barGap={0}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis
+                        dataKey="course"
+                        textAnchor="end"
+                        angle={-45}
+                        fontWeight="bold"
+                        fontSize="7px"
+                      />
+                      <YAxis domain={[0, 100]} tick={{ fontSize: 10 }} width={20} />
+                      <Tooltip
+                        formatter={(value, name) => {
+                          return [`${value}%`, name];
+                        }}
+                        labelFormatter={(label) => `Course: ${label}`}
+                        contentStyle={{
+                          borderRadius: '8px',
+                          boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                        }}
+                      />
+
+                      <Legend wrapperStyle={{ fontSize: '10px', paddingTop: '12px' }} />
+
+                      <Bar
+                        dataKey="actual"
+                        fill="#2E86DE"
+                        name="Current Grade"
+                        radius={[4, 4, 0, 0]}
+                      />
+                      <Bar
+                        dataKey="expected"
+                        fill="#E74C3C"
+                        name="Target Grade"
+                        radius={[4, 4, 0, 0]}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </>
+              )}
+            </div>
           ) : (
-            <div className="profile-goals-content">
-              <div
-                className="profile-goals-image-container"
-                style={{ position: 'relative', width: '100%', height: '200px' }}
-              ></div>
-              <div id="fallback-text" className="profile-goals-fallback hidden">
-                <p className="profile-goals-fallback-text">The image you are</p>
-                <p className="profile-goals-fallback-text">requesting does not exist</p>
-                <p className="profile-goals-fallback-text">or is no longer available</p>
+            <div className="profile-goals-empty-container">
+              <div className="profile-goals-empty-icon-wrapper">
+                <div className="profile-goals-empty-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="1.5"
+                      d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                    />
+                  </svg>
+                </div>
+                <div className="profile-goals-empty-icon-plus">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                    />
+                  </svg>
+                </div>
               </div>
+              <h3 className="profile-goals-empty-title">No Goal Data</h3>
+              <p className="profile-goals-empty-description">
+                Set academic goals to visualize your progress
+              </p>
             </div>
           )}
         </CardContent>
